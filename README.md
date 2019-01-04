@@ -2,7 +2,7 @@
 Directory Opus 脚本
 
 ## ShowFilesHash.vbs
-显示文件的哈希值
+显示文件的哈希值的命令
 ShowHash TYPE=MD5,SHA1 
 
 ## timeago.vbs
