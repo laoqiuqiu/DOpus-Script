@@ -3,20 +3,13 @@
 ' ShowFilesHash
 ' qiuqiu
 
-Const SCRIPT_DEBUG = False
 
 Sub Output(ByVal Msg)
 	If IsDebug Then	DOpus.Output Msg
 End Sub
 
 Function IsDebug()
-	On Error Resume Next
 	IsDebug = Script.Config.Debug Or SCRIPT_DEBUG
-	If Err.Number <> 0 Then
-		Err.Clear
-		IsDebug = SCRIPT_DEBUG
-	End If
-	If Err.Number <> 0 Then	IsDebug = False : Err.Clear
 End Function
 		
 Function OnInit(initData)
@@ -36,7 +29,7 @@ Function OnInit(initData)
 			.label    = "ShowHash"
 			.hide     = False
 			.icon     = "script"
-			.template = "TYPE/K[MD5,SHA1,SHA256,SHA512]"
+			.template = "TYPE/K[MD5,SHA1,SHA256,SHA512,CRC32,CRC32_PHP,CRC32_PHP_REV]"
 		End With
 	End With
 End Function
@@ -52,7 +45,7 @@ End Function
 ' Implement the ShowHash command
 Function OnShowHash(CmdData)
 	Dim Arg, Args, lvItem, File, dlg, msg, ItemIndex, ListView, FilePath, Tab, Files, lvColumn
-	Dim MD5, SHA1, SHA256, SHA512
+	Dim MD5, SHA1, SHA256, SHA512, CRC32, CRC32_PHP, CRC32_PHP_REV
 
 	Set Tab = cmdData.func.sourcetab
     Set dlg = DOpus.Dlg
@@ -76,6 +69,12 @@ Function OnShowHash(CmdData)
 					SHA256 = ListView.columns.AddColumn(Arg) - 1
 				Case "SHA512"
 					SHA512 = ListView.columns.AddColumn(Arg) - 1
+				Case "CRC32"
+					CRC32 = ListView.columns.AddColumn(Arg) - 1
+				Case "CRC32_PHP"
+					CRC32_PHP = ListView.columns.AddColumn(Arg) - 1
+				Case "CRC32_PHP_REV"
+					CRC32_PHP_REV = ListView.columns.AddColumn(Arg) - 1
 			End Select
 		Next
 	Else
@@ -86,7 +85,6 @@ Function OnShowHash(CmdData)
 	For Each lvColumn In ListView.columns
 		lvColumn.Resize = True
 	Next
-	Output Join(Array("MD5:", MD5 , "SHA1:", SHA1 , "SHA256:", SHA256, "SHA512:", SHA512), vbTab)
 
 	If Tab.selected_files.Count > 0 Then
 		Set Files = Tab.selected_files
@@ -96,10 +94,13 @@ Function OnShowHash(CmdData)
 
 	For Each File In Files
 		set lvItem = ListView.GetItemAt(ListView.AddItem(File.name))
-		If Args.exists("MD5")    then lvItem.subitems(MD5)    = DOpus.FSUtil.Hash(File.realpath, "md5")
-		If Args.exists("SHA1")   then lvItem.subitems(SHA1)   = DOpus.FSUtil.Hash(File.realpath, "SHA1")
-		If Args.exists("SHA256") then lvItem.subitems(SHA256) = DOpus.FSUtil.Hash(File.realpath, "SHA256")
-		If Args.exists("SHA512") then lvItem.subitems(SHA512) = DOpus.FSUtil.Hash(File.realpath, "SHA512")
+		If Args.exists("MD5")           then lvItem.subitems(MD5)           = DOpus.FSUtil.Hash(File.realpath, "MD5")
+		If Args.exists("SHA1")          then lvItem.subitems(SHA1)          = DOpus.FSUtil.Hash(File.realpath, "SHA1")
+		If Args.exists("SHA256")        then lvItem.subitems(SHA256)        = DOpus.FSUtil.Hash(File.realpath, "SHA256")
+		If Args.exists("SHA512")        then lvItem.subitems(SHA512)        = DOpus.FSUtil.Hash(File.realpath, "SHA512")
+		If Args.exists("CRC32")         then lvItem.subitems(CRC32)         = DOpus.FSUtil.Hash(File.realpath, "CRC32")
+		If Args.exists("CRC32_PHP")     then lvItem.subitems(CRC32_PHP)     = DOpus.FSUtil.Hash(File.realpath, "CRC32_PHP")
+		If Args.exists("CRC32_PHP_REV") then lvItem.subitems(CRC32_PHP_REV) = DOpus.FSUtil.Hash(File.realpath, "CRC32_PHP_REV")
 	Next
 	ListView.columns.AutoSize
 
@@ -130,7 +131,11 @@ End Function
 Function BuildText(ByRef ListView, ByVal Separator)
 	Dim lvItem, SubItem, ItemIndex, SubIndex, Result, Lines, Cols
 	If Separator ="" Then Separator = " "
-	
+	For Each lvItem In ListView.columns
+		Result = Result & lvItem.Name & "{DELIMITED}"
+	Next
+	Result = Left(Result, Len(Result) - 11) & "{CRLF}"
+
 	For ItemIndex = 0 to ListView.count - 1
 		set lvItem = ListView.GetItemAt(ItemIndex)
 		Result = Result & lvItem.name
