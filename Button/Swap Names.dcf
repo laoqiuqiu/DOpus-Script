@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>Swap Names</label>
+	<icon1>#rename</icon1>
+	<function type="normal">
+		<instruction>Rename PATTERN * TO *</instruction>
+		<instruction>@script vbscript</instruction>
+		<instruction />
+		<instruction>Option Explicit</instruction>
+		<instruction />'https://resource.dopus.com/t/swap-the-names-of-two-files/11743
+		<instruction>Dim strPrevName, strTempName</instruction>
+		<instruction>Randomize()</instruction>
+		<instruction />
+		<instruction>Function Rename_GetNewName ( strFileName, strFilePath, _</instruction>
+		<instruction>      fIsFolder, strOldName, ByRef strNewName )</instruction>
+		<instruction />
+		<instruction>   &apos; for the first file of every pair, save the old file and then rename with a random suffix</instruction>
+		<instruction>   if Len(strPrevName) = 0 Then</instruction>
+		<instruction>      strPrevName = strFileName</instruction>
+		<instruction>      strTempName = strNewName &amp; &quot;-temp&quot; &amp; Int(10000 * rnd())</instruction>
+		<instruction>   else</instruction>
+		<instruction>      Dim oldPath, newPath</instruction>
+		<instruction>      Dim fs</instruction>
+		<instruction>      Set fs = CreateObject(&quot;Scripting.FileSystemObject&quot;)</instruction>
+		<instruction />
+		<instruction>      &apos; rename the first file to a temporary name</instruction>
+		<instruction>      oldPath = fs.BuildPath(strFilePath, strPrevName)</instruction>
+		<instruction>      newPath = fs.BuildPath(strFilePath, strTempName)</instruction>
+		<instruction>      fs.MoveFile oldPath, newPath</instruction>
+		<instruction />
+		<instruction>      &apos; rename the second file to the first file&apos;s name</instruction>
+		<instruction>      oldPath = fs.BuildPath(strFilePath, strFileName)</instruction>
+		<instruction>      newPath = fs.BuildPath(strFilePath, strPrevName)</instruction>
+		<instruction>      fs.MoveFile oldPath, newPath</instruction>
+		<instruction />
+		<instruction>      &apos; rename the first file to the second file&apos;s name</instruction>
+		<instruction>      oldPath = fs.BuildPath(strFilePath, strTempName)</instruction>
+		<instruction>      newPath = fs.BuildPath(strFilePath, strFileName)</instruction>
+		<instruction>      fs.MoveFile oldPath, newPath</instruction>
+		<instruction>      </instruction>
+		<instruction>      Set fs = Nothing</instruction>
+		<instruction>      strPrevName = &quot;&quot; &apos; reset for next file</instruction>
+		<instruction>   end if</instruction>
+		<instruction>   strNewName = strFileName &apos; nop - rename is handled by the FileSystemObject</instruction>
+		<instruction>      </instruction>
+		<instruction>End Function</instruction>
+	</function>
+</button>
