@@ -19,6 +19,7 @@ Function OnInit(initData)
 		.default_enable = true
 		.min_version    = "12.0"
 		.Config.Decimal = 0
+
 		with .AddColumn
 			.name        = "Create_At"
 			.method      = "On_timeago"
@@ -65,32 +66,6 @@ end sub
 'PHP Time Ago Function
 'https://phppot.com/php/php-time-ago-function/
 'https://css-tricks.com/snippets/php/time-ago-function/
-' function timeago(ByVal dDate)
-' 	dim periods, lengths, diff, ago, agomap, index, Recent
-
-' 	Recent  = Split(DOpus.strings.get("Recent"), ",")
-' 	periods = Split(DOpus.strings.get("periods"), ",")
-' 	agomap  = Split(DOpus.strings.get("at"), ",")
-' 	lengths = array(60, 60, 24, 7, 365.25/7/12, 12)
-' 	index   = 0
-
-' 	ago = IIf(dDate > Now(), 1, 0)
-' 	diff = Abs(DateDiff("s", dDate, Now()))
-	
-' 	Do While diff >= lengths(index) And Ubound(periods)
-' 		diff = diff / lengths(index)
-' 		index = index + 1
-' 		if index > UBound(lengths) Then Exit do
-' 	Loop
-	
-' 	diff = int(diff)
-	
-' 	if LCase(dopus.language) = "english" Then
-' 		if diff > 1 Then periods(index) = periods(index) + "s"	
-' 	end if
-	
-' 	timeago = IIf(index, diff & periods(index) & agomap(ago), Recent(ago))
-' End Function
 
 Function TimeAgo(Byval Ddate)
 	Dim Periods, Lengths, Diff, Ago, AgoMap, Index, Recent
