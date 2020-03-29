@@ -14,32 +14,32 @@ Function OnInit(initData)
 		.name           = "timeago"
 		.version        = "1.0"
 		.copyright      = "qiuqiu"
-		.desc           = DOpus.strings.get("desc")
-		.url            = "https://resource.dopus.com/u/qiuqiu/"
-		.default_enable = true
+		.desc           = DOpus.Strings.Get("desc")
+		.url            = "http://script.dopus.net/"
+		.default_enable = True
 		.min_version    = "12.0"
 		.Config.Decimal = 0
 
 		with .AddColumn
 			.name        = "Create_At"
 			.method      = "On_timeago"
-			.label       = DOpus.strings.get("CreateAt")
+			.label       = DOpus.Strings.Get("CreateAt")
 			.justify     = "right"
 			.type        = "text"
-			.multicol    = true
-			.autogroup   = true
-			.autorefresh = true
+			.multicol    = True
+			.autogroup   = True
+			.autorefresh = True
 		end with
 
 		with .AddColumn
 			.name        = "Modify_At"
 			.method      = "On_timeago"
-			.label       = DOpus.strings.get("ModifyAt")
+			.label       = DOpus.Strings.Get("ModifyAt")
 			.justify     = "right"
 			.type        = "text"
-			.multicol    = true
-			.autogroup   = true
-			.autorefresh = true
+			.multicol    = True
+			.autogroup   = True
+			.autorefresh = True
 		end with
 	end with
 End Function
@@ -92,10 +92,10 @@ End Function
 ' Implement the timeago column
 Function On_timeago(ColData)
 	dim CreateDate, ModifyDate, CreateDiff, ModifyDiff
-
+	On Error Resume Next 
 	CreateDate = ColData.item.Create
 	ModifyDate = ColData.item.Modify
-
+	
 	CreateDiff = DateDiff("s", CreateDate, Now())
 	ModifyDiff = DateDiff("s", ModifyDate, Now())
 
@@ -108,29 +108,29 @@ End Function
 
 ' Called to display an About dialog for this script
 Function OnAboutScript(aboutData)
-    'Dopus.Dlg.Request DOpus.strings.get("desc"), "OK", "About", aboutData.window
-    ShowMessageDialog DOpus.strings.get("desc"), "OK", "About", aboutData.window, "info"
+    'Dopus.Dlg.Request DOpus.Strings.Get("desc"), "OK", "About", aboutData.window
+    ShowMessageDialog DOpus.Strings.Get("desc"), "OK", "About", aboutData.window, "info"
 End Function
 
 ==SCRIPT RESOURCES
 <resources>
-    <resource type = "strings">
-        <strings lang = "english">
+    <resource type = "Strings">
+        <Strings lang = "english">
             <string id = "CreateAt" text = "Create At" />
             <string id = "ModifyAt" text = "Modify At" />
             <string id = "Recent"   text = "just now, right now" />
             <string id = "at"       text = " Ago, Later" />
             <string id = "periods"  text = " second, minute, hour, day, week, month, year" />
             <string id = "desc"     text = "format file create(modify) date with '*** time ago' statement. eg: '3 hours ago'." />
-		</strings>
-		<strings lang = "chs">
+		</Strings>
+		<Strings lang = "chs">
 			<string id = "CreateAt" text = "创建于" />
             <string id = "ModifyAt" text = "修改于" />
             <string id = "Recent"   text = "刚刚, 片刻后" />
             <string id = "at"       text = "前,后" />
             <string id = "periods"  text = " 秒, 分钟, 小时, 天, 周, 月, 年" />
             <string id = "desc"     text = "格式化文件创建 (修改) 日期 '** 时间前' 例如:3小时前。" />
-        </strings>
+        </Strings>
     </resource>
 </resources>
 
