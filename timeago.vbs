@@ -1,4 +1,4 @@
-option explicit
+﻿option explicit
 
 ' timeago
 ' Author: qiuqiu
@@ -11,7 +11,7 @@ option explicit
 ' Called by Directory Opus to initialize the script
 Function OnInit(initData)
 	with initData
-		.name           = "timeago"
+		.name           = "Displays the age of the file"
 		.version        = "1.0"
 		.copyright      = "qiuqiu"
 		.desc           = DOpus.Strings.Get("desc")
