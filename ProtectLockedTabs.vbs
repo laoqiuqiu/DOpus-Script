@@ -23,6 +23,6 @@ End Function
 
 ' Called when a tab is closed
 Function OnCloseTab(TabData)
-	If TabData.Tab.Lock = "on" Then OnCloseTab = True
+	If TabData.Tab.Lock <> "off" Then OnCloseTab = True
 End Function
 
