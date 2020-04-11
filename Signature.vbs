@@ -38,7 +38,7 @@ Function OnSignature(ColData)
 	Set Signature = ColData.Item.Open.Read(Script.Config.Lenght)
 	For I = 0 To Signature.Size - 1
 		HexStr = HexStr & Right("0" & Hex(Signature(I)), 2) & " "
-		AscStr = AscStr & IIf(Signature(I) > 31 And Signature(I) < 127, ChrW(Signature(I)), ".") & " "
+		AscStr = AscStr & IIf(Signature(I) > 31 And Signature(I) < 127, ChrW(Signature(I)), ".")
 	Next
 	ColData.Value = "[ " & HexStr & " | " & Left(AscStr, 16) & " ]"
 End Function
