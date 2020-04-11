@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>Find Shell Properties</label>
+	<tip>Search the Shell Properties List</tip>
+	<icon1>/system/imageres.dll,63</icon1>
+	<function type="script">
+		<instruction>@script JScript</instruction>
+		<instruction>//https://resource.dopus.com/t/quickly-find-shell-property-names/28362/2?u=qiuqiu</instruction>
+		<instruction>function OnClick(clickData)</instruction>
+		<instruction>{</instruction>
+		<instruction>	var srcTab = clickData.func.sourcetab;</instruction>
+		<instruction>	</instruction>
+		<instruction>	var dlg = DOpus.Dlg;</instruction>
+		<instruction>    dlg.window = srcTab;</instruction>
+		<instruction>    dlg.title = &quot;Shell Properties - Directory Opus&quot;;</instruction>
+		<instruction>    dlg.template = &quot;dlgShellProp&quot;;</instruction>
+		<instruction>    dlg.detach = true;</instruction>
+		<instruction>	dlg.Show();</instruction>
+		<instruction />
+		<instruction>	while (true) {</instruction>
+		<instruction>		var msg = dlg.GetMsg();</instruction>
+		<instruction />
+		<instruction>		if (!msg.result) break;</instruction>
+		<instruction />
+		<instruction>		if (msg.event == &quot;click&quot; &amp;&amp; dlg.Control(&quot;btnSearch&quot;).focus == true ||</instruction>
+		<instruction>			msg.event == &quot;click&quot; &amp;&amp; dlg.Control(&quot;editFilter&quot;).focus == true) {</instruction>
+		<instruction />
+		<instruction>			dlg.Control(&quot;listShellProp&quot;).RemoveItem(-1);</instruction>
+		<instruction />
+		<instruction>			var strSearch = &quot;*&quot; + dlg.Control(&quot;editFilter&quot;).value + &quot;*&quot;;</instruction>
+		<instruction />
+		<instruction>			var shellPropList = DOpus.FSUtil.GetShellPropertyList(strSearch);</instruction>
+		<instruction>			</instruction>
+		<instruction>			for (var enumShellProp = new Enumerator(shellPropList); !enumShellProp.atEnd(); </instruction>
+		<instruction>																	enumShellProp.moveNext()) {</instruction>
+		<instruction />
+		<instruction>			var i = dlg.Control(&quot;listShellProp&quot;).AddItem(enumShellProp.item().display_name);</instruction>
+		<instruction>			dlg.Control(&quot;listShellProp&quot;).GetItemAt(i).subitems(0) = enumShellProp.item().raw_name;</instruction>
+		<instruction>			dlg.Control(&quot;listShellProp&quot;).GetItemAt(i).subitems(1) = enumShellProp.item().pkey;</instruction>
+		<instruction>			dlg.Control(&quot;listShellProp&quot;).GetItemAt(i).subitems(2) = enumShellProp.item().type;</instruction>
+		<instruction>			}</instruction>
+		<instruction />
+		<instruction>			dlg.Control(&quot;listShellProp&quot;).columns.AutoSize();</instruction>
+		<instruction>		}</instruction>
+		<instruction />
+		<instruction>		if (msg.event == &quot;dblclk&quot; &amp;&amp; dlg.Control(&quot;listShellProp&quot;).focus == true) {</instruction>
+		<instruction />
+		<instruction>			var strClip = </instruction>
+		<instruction>			DOpus.SetClip(dlg.Control(&quot;listShellProp&quot;).value.name);</instruction>
+		<instruction>			DOpus.Output(dlg.Control(&quot;listShellProp&quot;).value.name + &quot; = &quot; + </instruction>
+		<instruction>							dlg.Control(&quot;listShellProp&quot;).value.subitems(0));</instruction>
+		<instruction>			DOpus.Output(dlg.Control(&quot;listShellProp&quot;).value.subitems(1));</instruction>
+		<instruction>		}</instruction>
+		<instruction />
+		<instruction>		if (msg.event == &quot;click&quot; &amp;&amp; dlg.Control(&quot;btnCopyName&quot;).focus == true) {</instruction>
+		<instruction>			DOpus.SetClip(dlg.Control(&quot;listShellProp&quot;).value.name);</instruction>
+		<instruction>		}</instruction>
+		<instruction>		</instruction>
+		<instruction>		if (msg.event == &quot;click&quot; &amp;&amp; dlg.Control(&quot;btnCopyRawName&quot;).focus == true) {</instruction>
+		<instruction>			DOpus.SetClip(dlg.Control(&quot;listShellProp&quot;).value.subitems(0));</instruction>
+		<instruction>		}</instruction>
+		<instruction>		</instruction>
+		<instruction>		if (msg.event == &quot;click&quot; &amp;&amp; dlg.Control(&quot;btnCopyPkey&quot;).focus == true) {</instruction>
+		<instruction>			DOpus.SetClip(dlg.Control(&quot;listShellProp&quot;).value.subitems(1));</instruction>
+		<instruction>		}	</instruction>
+		<instruction>	}</instruction>
+		<instruction>}</instruction>
+		<instruction>==SCRIPT RESOURCES</instruction>
+		<instruction>&lt;resources&gt;</instruction>
+		<instruction>	&lt;resource name=&quot;dlgShellProp&quot; type=&quot;dialog&quot;&gt;</instruction>
+		<instruction>		&lt;dialog fontsize=&quot;8&quot; height=&quot;258&quot; lang=&quot;english&quot; standard_buttons=&quot;ok&quot; title=&quot;Shell Properties - Directory Opus&quot; width=&quot;507&quot;&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;editFilter&quot; tip=&quot;Enter a shell property name&quot; type=&quot;edit&quot; width=&quot;296&quot; x=&quot;96&quot; y=&quot;15&quot; /&gt;</instruction>
+		<instruction>			&lt;control editlabels=&quot;yes&quot; fullrow=&quot;yes&quot; height=&quot;143&quot; name=&quot;listShellProp&quot; type=&quot;listview&quot; viewmode=&quot;details&quot; width=&quot;476&quot; x=&quot;16&quot; y=&quot;49&quot;&gt;</instruction>
+		<instruction>				&lt;columns&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Name&quot; /&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Raw Name&quot; /&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Property Key&quot; /&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Type&quot; /&gt;</instruction>
+		<instruction>				&lt;/columns&gt;</instruction>
+		<instruction>			&lt;/control&gt;</instruction>
+		<instruction>			&lt;control height=&quot;164&quot; name=&quot;group1&quot; title=&quot;Shell Property List&quot; type=&quot;group&quot; width=&quot;493&quot; x=&quot;7&quot; y=&quot;36&quot; /&gt;</instruction>
+		<instruction>			&lt;control height=&quot;31&quot; name=&quot;group2&quot; title=&quot;Search&quot; type=&quot;group&quot; width=&quot;493&quot; x=&quot;6&quot; y=&quot;3&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;8&quot; name=&quot;static1&quot; title=&quot;Search string:&quot; type=&quot;static&quot; width=&quot;65&quot; x=&quot;17&quot; y=&quot;17&quot; /&gt;</instruction>
+		<instruction>			&lt;control default=&quot;yes&quot; height=&quot;14&quot; name=&quot;btnSearch&quot; title=&quot;Search&quot; type=&quot;button&quot; width=&quot;89&quot; x=&quot;401&quot; y=&quot;14&quot; /&gt;</instruction>
+		<instruction>			&lt;control height=&quot;14&quot; name=&quot;btnCopyName&quot; title=&quot;Copy Name&quot; type=&quot;button&quot; width=&quot;102&quot; x=&quot;53&quot; y=&quot;214&quot; /&gt;</instruction>
+		<instruction>			&lt;control height=&quot;14&quot; name=&quot;btnCopyRawName&quot; title=&quot;Copy Raw Name&quot; type=&quot;button&quot; width=&quot;102&quot; x=&quot;203&quot; y=&quot;214&quot; /&gt;</instruction>
+		<instruction>			&lt;control height=&quot;14&quot; name=&quot;btnCopyPkey&quot; title=&quot;Copy Property Key&quot; type=&quot;button&quot; width=&quot;102&quot; x=&quot;353&quot; y=&quot;214&quot; /&gt;</instruction>
+		<instruction>			&lt;control height=&quot;34&quot; name=&quot;group3&quot; title=&quot;Clipboard&quot; type=&quot;group&quot; width=&quot;493&quot; x=&quot;7&quot; y=&quot;202&quot; /&gt;</instruction>
+		<instruction>		&lt;/dialog&gt;</instruction>
+		<instruction>	&lt;/resource&gt;</instruction>
+		<instruction>&lt;/resources&gt;</instruction>
+	</function>
+</button>
