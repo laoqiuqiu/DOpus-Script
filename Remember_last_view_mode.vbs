@@ -37,25 +37,7 @@ End Function
 
 ' Called when Directory Opus shuts down
 Function OnCloseLister(CloseListerData)
-	Dim Mode
-
-	Select Case DOpus.listers.lastactive.activetab.format.view
-	Case "large_icons"
-		Mode = "largeicons"
-	Case "small_icons"
-		Mode = "smallicons"
-	Case "list"
-		Mode = "list"
-	Case "details"
-		Mode = "details"
-	Case "power"
-		Mode = "power"
-	Case "thumbnails"
-		Mode = "thumbnails"
-	Case "tile"				
-		Mode = "tiles"				
-	End Select
 	If (DOpus.listers.Count = 1)  Then
-		DOpus.Vars.Set "last_view_mode", Mode
+		DOpus.Vars.Set "last_view_mode", Replace(DOpus.listers.lastactive.activetab.format.view, "_", "")
 	End If
 End Function
