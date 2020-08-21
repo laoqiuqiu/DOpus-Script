@@ -6,4 +6,7 @@
 FileType CONTEXTMENU={5B69A6B4-393B-459C-8EBB-214237A9E7AC} CONTEXTFORCE 
 ```
 ### 在资源管理器中打开
-`"/windows\explorer.exe" /Select, /e, {s}`
+```
+@hidenosel:maxfiles=1,maxdirs=1
+"/windows\explorer.exe" /Select, /e, {s}
+```
