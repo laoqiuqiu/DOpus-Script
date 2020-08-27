@@ -20,6 +20,11 @@ Function OnInit(initData)
 		.min_version    = "12.0"
 		.Config.Decimal = 0
 
+		.Vars.Set "Recent",  Split(Dopus.Strings.Get("Recent"), ",")
+		.Vars.Set "Periods", Split(Dopus.Strings.Get("Periods"), ",")
+		.Vars.Set "Agomap",  Split(Dopus.Strings.Get("At"), ",")
+		.Vars.Set "Lengths", Array(60, 60, 24, 7, 365.25/7/12, 12)
+
 		with .AddColumn
 			.name        = "Create_At"
 			.method      = "On_timeago"
@@ -70,23 +75,23 @@ end sub
 Function TimeAgo(Byval Ddate)
 	Dim Periods, Lengths, Diff, Ago, AgoMap, Index, Recent
 	
-	Recent  = Split(Dopus.Strings.Get("Recent"), ",")
-	Periods = Split(Dopus.Strings.Get("Periods"), ",")
-	Agomap  = Split(Dopus.Strings.Get("At"), ",")
-	Lengths = Array(60, 60, 24, 7, 365.25/7/12, 12)
+'	Recent  = Split(Dopus.Strings.Get("Recent"), ",")
+'	Periods = Split(Dopus.Strings.Get("Periods"), ",")
+'	Agomap  = Split(Dopus.Strings.Get("At"), ",")
+'	Lengths = Array(60, 60, 24, 7, 365.25/7/12, 12)
 	
 	Diff = Abs(Datediff("S", Ddate, Now()))
 	If Ddate > Now() Then Ago = 1 Else Ago = 0
 	
-	For Index = 0 To Ubound(Lengths)
-		If Diff >= Lengths(Index) Then
-			Diff = Diff / Lengths(Index)
+	For Index = 0 To Ubound(Script.Vars.Get("Lengths"))
+		If Diff >= Script.Vars.Get("Lengths")(Index) Then
+			Diff = Diff / Script.Vars.Get("Lengths")(Index)
 		Else
 			Exit For
 		End If
 	Next
 	If Index > 1 Then Diff = Round(Diff, Script.Config.Decimal) Else Diff = Int(Diff)
-	If Index Then TimeAgo = Diff & Periods(Index) & AgoMap(Ago) Else TimeAgo = Recent(Ago)
+	If Index Then TimeAgo = Diff & Script.Vars.Get("Periods")(Index) & Script.Vars.Get("AgoMap")(Ago) Else TimeAgo = Script.Vars.Get("Recent")(Ago)
 End Function
 
 ' Implement the timeago column
