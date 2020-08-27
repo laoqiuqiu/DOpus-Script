@@ -75,11 +75,6 @@ end sub
 Function TimeAgo(Byval Ddate)
 	Dim Periods, Lengths, Diff, Ago, AgoMap, Index, Recent
 	
-'	Recent  = Split(Dopus.Strings.Get("Recent"), ",")
-'	Periods = Split(Dopus.Strings.Get("Periods"), ",")
-'	Agomap  = Split(Dopus.Strings.Get("At"), ",")
-'	Lengths = Array(60, 60, 24, 7, 365.25/7/12, 12)
-	
 	Diff = Abs(Datediff("S", Ddate, Now()))
 	If Ddate > Now() Then Ago = 1 Else Ago = 0
 	
