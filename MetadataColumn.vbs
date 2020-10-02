@@ -8,7 +8,7 @@ Function OnInit(initData)
 	initData.name = "MetadataColumn"
 	initData.version = "1.0"
 	initData.copyright = "qiuqiu"
-'	initData.url = "https://resource.dopus.com/viewforum.php?f=35"
+	initData.url = "http://script.dopus.net/"
 	initData.desc = "Parse data from Metadata"
 	initData.default_enable = true
 	initData.min_version = "12.0"
