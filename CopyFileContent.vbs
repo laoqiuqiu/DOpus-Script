@@ -9,7 +9,7 @@
 ' FILEINFO  (Switch)   Optional, include file information.
 ' PATTERN   (keyword)  Optional, Specify the wildcard pattern which files must match.
 ' REGEXP    (Switch)   Optional, Enables regular expression mode.
-' TRIM      (Switch)   Optional, Without leading spaces (left), trailing spaces (right), or both leading and trailing spaces (all).
+' TRIM      (keyword)   Optional, Without leading spaces (left), trailing spaces (right), or both leading and trailing spaces (all).
 
 ' Examples:
 ' Send the contents of the specified file to the clipboard.
