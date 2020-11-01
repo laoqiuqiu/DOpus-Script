@@ -3,27 +3,27 @@
 ' CopyContent
 ' (c) 2020 qiuqiu
 
-' Arguments
-' APPEND    (Switch)   Optional, Append to clipboard.
-' FILE      (multiple) Optional, The full path to one or more files, Multiple files are separated by spaces.
-' FILEINFO  (Switch)   Optional, include file information.
-' PATTERN   (keyword)  Optional, Specify the wildcard pattern which files must match.
-' REGEXP    (Switch)   Optional, Enables regular expression mode.
-' TRIM      (keyword)   Optional, Without leading spaces (left), trailing spaces (right), or both leading and trailing spaces (all).
+' Arguments:
+'     APPEND    (Switch)   Optional, Default is False, Append to clipboard.
+'     FILE      (multiple) Optional, The full path to one or more files, Multiple files are separated by spaces.
+'     FILEINFO  (Switch)   Optional, Default is False, include file information.
+'     PATTERN   (keyword)  Optional, Specify the wildcard pattern which files must match.
+'     REGEXP    (Switch)   Optional, Default is False, Enables regular expression mode.
+'     TRIM      (keyword)  Optional, Default is all, Without leading spaces (left), trailing spaces (right), or both leading and trailing spaces (all).
 
 ' Examples:
-' Send the contents of the specified file to the clipboard.
-' CopyContent c:\test.txt
+'     Send the contents of the specified file to the clipboard.
+'     CopyContent c:\test.txt
 '
-' Send the contents of the file with the extension txt in the specified folder to the clipboard.
-' CopyContent c:\temp PATTERN *.(txt|vbs) FILEINFO TRIM
+'     Send the contents of the file with the extension txt in the specified folder to the clipboard.
+'     CopyContent c:\temp PATTERN *.(txt|vbs) FILEINFO TRIM
 '
-' Send file content to clipboard for all selected TXT files only.
-' CopyContent PATTERN *.TXT 
+'     Send file content to clipboard for all selected TXT files only.
+'     CopyContent PATTERN *.TXT 
 
 ' History:
-' 2020-10-28 First version
-
+'     2020-10-28 First version
+'     2020-10-29 Some fixes
 
 ' Called by Directory Opus to initialize the script
 Function OnInit(initData)
@@ -35,7 +35,7 @@ Function OnInit(initData)
         .Desc           = Dopus.Strings.Get("desc")
         .Default_Enable = True
         .Min_Version    = "12.0" ' Used a feature included in 12.20.7, I did not test it in DOpus earlier than this version.
-        .group          = Dopus.Strings.Get("group")
+        .Group          = Dopus.Strings.Get("group")
         
         With .AddCommand
             .Name     = "CopyContent"
@@ -44,7 +44,7 @@ Function OnInit(initData)
             .Label    = "CopyContent"
             .Template = "APPEND/S/O,FILEINFO/S/O,FILE/M,PATTERN/K/O,REGEXP/S/O,TRIM/K/O[all,left,right]"
             .Hide     = False
-            .Icon     = "copy"
+            .Icon     = "empty" ' "/system/DxpTaskSync.dll,2"
         End With
     End With
 End Function
@@ -68,7 +68,11 @@ Function OnCopyContent(CmdData)
         Files.Assign CmdData.Func.Command.Files
     End If
     
-    If Files.Empty Then Exit Function
+    If Files.Empty Then
+        DOpus.Output "The number of available files is 0", True
+        OnCopyContent = True
+        Exit Function
+    End If
     CmdData.Func.Command.ClearFiles
     For Each i In Files
         CmdData.Func.Command.AddFiles GetFiles(i, False)
@@ -94,10 +98,13 @@ Function OnCopyContent(CmdData)
     
     Result = Trim(Result)
     
-    If Len(Result) = 0 Then Exit Function
+    If Len(Result) = 0 Then
+         OnCopyContent = True
+        Exit Function
+    End If
     If CmdData.Func.args.got_arg.append Then
-        If DOpus.GetClipFormat = "text" Then CilpText = DOpus.GetClip
-        DOpus.SetClip CilpText & vbNewLine & Result
+        If DOpus.GetClipFormat = "text" Then CilpText = DOpus.GetClip & vbNewLine
+        DOpus.SetClip CilpText & Result
     Else
         DOpus.SetClip Result
     End If
@@ -273,7 +280,10 @@ Function ReadText(ByVal File)
         Else
             On Error Resume Next
             Text = StringTools.Decode(Blob, "auto") ' 12.20.7, The scripting StringTools object's Encode and Decode methods can now convert to and from raw UTF-16 data, including support for both Big Endian and Little Endian, and optional Byte Order Marks.
-            If Err.Number = 5 Then Text = ADOReadText(File)
+            If Err.Number = 5 Then 
+                Text = ADOReadText(File)
+                Err.Number = 0
+            End If
         End If
         
         Set StringTools = Nothing : Set Blob = Nothing
