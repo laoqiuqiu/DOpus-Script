@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<button backcol="none" display="icon" label_pos="right" textcol="none">
+	<label>快速过滤</label>
+	<icon1>#filterfield</icon1>
+	<function type="script">
+		<instruction>@script VBScript</instruction>
+		<instruction>Option Explicit</instruction>
+		<instruction>Function OnClick(ByRef clickData)</instruction>
+		<instruction>	DOpus.ClearOutput</instruction>
+		<instruction>	Dim cmd, lister, tab, dlg, ret, S_With, E_With, S_Text</instruction>
+		<instruction>	S_With = &quot;&quot; : E_With = &quot;&quot; : S_Text = &quot;Contain&quot;</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>	Set cmd = clickData.func.command</instruction>
+		<instruction>	Set dlg = DOpus.Dlg </instruction>
+		<instruction>	&apos; Initialise the object to display a popup menu the user can select from</instruction>
+		<instruction>	&apos;DOpus.Output ClickData.Func.Qualifiers</instruction>
+		<instruction>	Select Case LCase(ClickData.Func.Qualifiers)</instruction>
+		<instruction>		Case &quot;ctrl&quot;  : E_With = &quot;*&quot; : S_Text = &quot;Star With&quot;</instruction>
+		<instruction>		Case &quot;shift&quot; : S_With = &quot;*&quot; : S_Text = &quot;End With&quot;</instruction>
+		<instruction>	End Select</instruction>
+		<instruction>	dlg.window = DOpus.Listers(0)</instruction>
+		<instruction>	dlg.choices = Array(S_Text, &quot;-&quot;, &quot;Clear	&amp;-&quot;, &quot;-&quot;, &quot;Number	&amp;0&quot;, &quot;-&quot;, &quot;A	&amp;A&quot;, &quot;B	&amp;B&quot;, &quot;C	&amp;C&quot;, &quot;D	&amp;D&quot;, &quot;E	&amp;E&quot;, &quot;F	&amp;F&quot;, &quot;G	&amp;G&quot;, &quot;H	&amp;H&quot;, &quot;I	&amp;I&quot;, &quot;J	&amp;J&quot;, &quot;K	&amp;K&quot;, &quot;L	&amp;L&quot;, &quot;M	&amp;M&quot;, &quot;N	&amp;N&quot;, &quot;O	&amp;O&quot;, &quot;P	&amp;P&quot;, &quot;Q	&amp;Q&quot;, &quot;R	&amp;R&quot;, &quot;S	&amp;S&quot;, &quot;T	&amp;T&quot;, &quot;U	&amp;U&quot;, &quot;V	&amp;V&quot;, &quot;W	&amp;W&quot;, &quot;X	&amp;X&quot;, &quot;Y	&amp;Y&quot;, &quot;Z	&amp;Z&quot;, &quot;-&quot;, &quot;Symbol	&amp;=&quot;)</instruction>
+		<instruction>	dlg.menu = Array(8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)</instruction>
+		<instruction>	&apos; Show the menu and print the results to the script log</instruction>
+		<instruction>	ret = dlg.Show</instruction>
+		<instruction>	DOpus.Output ret</instruction>
+		<instruction>	Select Case ret</instruction>
+		<instruction>		Case 3 : cmd.RunCommand(&quot;Set QUICKFILTERCLEAR&quot;)</instruction>
+		<instruction>		Case 5 : cmd.RunCommand(&quot;Set QuickFilter &quot; &amp; S_With &amp; &quot;(0|1|2|3|4|5|6|7|8|9)&quot; &amp; E_With)</instruction>
+		<instruction>		Case 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 : cmd.runcommand(&quot;Set QuickFilter &quot; &amp; S_With &amp; Chr(ret + 92) &amp; E_With)</instruction>
+		<instruction>		Case 35 : cmd.RunCommand(&quot;Set QUICKFILTER &quot; &amp; S_With &amp; &quot;(&apos;~|`|!|@|&apos;#|$|^|+|-|_|;|&apos;(|&apos;)|{|}|[|])&quot; &amp; E_With)</instruction>
+		<instruction>	End Select</instruction>
+		<instruction>End Function</instruction>
+	</function>
+</button>

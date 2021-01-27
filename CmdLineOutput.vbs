@@ -3,8 +3,6 @@
 ' Print
 ' (c) 2019 qiuqiu
 
-' This is a script for Directory Opus.
-' See https://www.gpsoft.com.au/DScripts/redirect.asp?page=scripts for development information.
 ' Called by Directory Opus to initialize the script
 Const clRed    = "#FF0000"
 Const clBule   = "#0000FF"
@@ -16,19 +14,19 @@ Const O_text   = "<Font Color={0}>{1}: {2}</Font>"
 
 Function OnInit(initData)
   With initData
-    .name           = "Output debug messages."
+    .name           = "Output messages."
     .version        = "1.0"
     .copyright      = "(c) 2019 qiuqiu"
-    .desc           = "Output debug messages in command line." & vbCRLF & "Example: debug type=test color=red text=hello world!"
-    .url            = "https://github.com/laoqiuqiu/DOpus-Script"
+    .desc           = "Displays messages in log window." & vbCRLF & "Example: debug type=test color=red text=hello world!"
+    .url            = "http://script.dopus.net/"
     .default_enable = true
     .min_version    = "11.0"
 
     Dim cmd
     Set cmd = .AddCommand
     With .AddCommand 'cmd
-      .name     = "Debug"
-      .method   = "OnOutput"
+      .name     = "ECHO"
+      .method   = "OnECHO"
       .desc     = initData.desc
       .label    = "Debug"
       .template = "TYPE/K[Debug,Error,Info,Test],COLOR/O[Red,Bule,Green,Black,Write,Purple,#123456],TEXT/R[Output debug messages.]"
@@ -40,7 +38,7 @@ End Function
 
 
 ' Implement the Print command
-Function OnOutput(scriptCmdData)
+Function OnECHO(scriptCmdData)
   Dim Cmd_Args, Arg_Color, Arg_Type, Out_Type, Out_Text, Out_Color
   
   Out_Color = clBlack

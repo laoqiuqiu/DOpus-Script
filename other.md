@@ -11,4 +11,6 @@ FileType CONTEXTMENU={5B69A6B4-393B-459C-8EBB-214237A9E7AC} CONTEXTFORCE
 "/windows\explorer.exe" /Select, /e, {s}
 ```
 ### 删除 GPS 信息
-`SetAttr META gpsaltitude gpslatitude gpslongitude`
+```
+SetAttr META gpsaltitude gpslatitude gpslongitude
+```
