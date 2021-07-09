@@ -24,6 +24,7 @@
 ' History:
 '     2020-10-28 First version
 '     2020-10-29 Some fixes
+'     2021-07-09 Some fixes
 
 ' Called by Directory Opus to initialize the script
 Function OnInit(initData)
@@ -32,15 +33,15 @@ Function OnInit(initData)
         .Version        = "1.0"
         .Copyright      = "(c) 2020 qiuqiu"
         .Url            = "http://script.dopus.net/"
-        .Desc           = Dopus.Strings.Get("desc")
+        .Desc           = LoadResourceString("desc")
         .Default_Enable = True
         .Min_Version    = "12.0" ' Used a feature included in 12.20.7, I did not test it in DOpus earlier than this version.
-        .Group          = Dopus.Strings.Get("group")
+        .Group          = LoadResourceString("group")
         
         With .AddCommand
             .Name     = "CopyContent"
             .Method   = "OnCopyContent"
-            .Desc     = Dopus.Strings.Get("desc")
+            .Desc     = LoadResourceString("desc")
             .Label    = "CopyContent"
             .Template = "APPEND/S/O,FILEINFO/S/O,FILE/M,PATTERN/K/O,REGEXP/S/O,TRIM/K/O[all,left,right]"
             .Hide     = False
@@ -53,7 +54,7 @@ End Function
 Function OnCopyContent(CmdData)
     Dim CilpText, Result, Text, FileInfo, Files, Flags, i, kTrim
     Set Files = DOpus.Create.Vector
-    
+
     If CmdData.Func.Args.got_arg.trim Then
         If len(CmdData.Func.Args.trim) Then
             kTrim = Split(LCase(CmdData.Func.Args.trim), ",")(0)	
@@ -67,7 +68,7 @@ Function OnCopyContent(CmdData)
     ElseIf CmdData.Func.Command.Filecount > 0 Then
         Files.Assign CmdData.Func.Command.Files
     End If
-    
+
     If Files.Empty Then
         DOpus.Output "The number of available files is 0", True
         OnCopyContent = True
@@ -116,9 +117,9 @@ Function TrimL(ByVal str)
     Do While True
         Select Case left(str, 1)
             Case vbCR, vbLF, vbTab, vbVerticalTab, " "
-            str = Right(str, Len(str) - 1)
+                str = Right(str, Len(str) - 1)
             Case Else
-            Exit Do
+                Exit Do
         End Select
     Loop
     TrimL = str
@@ -129,9 +130,9 @@ Function TrimR(ByVal str)
     Do While True
         Select Case Right(str, 1)
             Case vbCR, vbLF, vbTab, vbVerticalTab, " "
-            str = Left(str, Len(str) - 1)
+                str = Left(str, Len(str) - 1)
             Case Else
-            Exit Do
+                Exit Do
         End Select
     Loop
     TrimR = str
@@ -148,14 +149,14 @@ End Function
 Function GetFiles(ByVal strPath, ByVal blnRecurse)
     Dim Flags, f
     Set GetFiles = DOpus.Create.Vector
-    Select Case DOpus.FSUtil.GetType(strPath) 
+    Select Case LCase(DOpus.FSUtil.GetType(strPath))
         Case "dir"
-        If blnRecurse Then Flags = "r" Else Flags = Empty
-        For Each f In DOpus.FSUtil.ReadDir(strPath, Flags).Next(-1)
-            If Not f.is_dir Then GetFiles.push_back f
-        Next ' f 
+            If blnRecurse Then Flags = "r" Else Flags = Empty
+            For Each f In DOpus.FSUtil.ReadDir(strPath, Flags).Next(-1)
+                If Not f.is_dir Then GetFiles.push_back f
+            Next ' f 
         Case "file"
-        GetFiles.push_back DOpus.FSUtil.GetItem(strPath)
+            GetFiles.push_back DOpus.FSUtil.GetItem(strPath)
     End Select
 End Function
 
@@ -288,6 +289,14 @@ Function ReadText(ByVal File)
         
         Set StringTools = Nothing : Set Blob = Nothing
         ReadText = Text
+    End If
+End Function
+
+Function LoadResourceString(ByVal ResourceName)
+    If DOpus.Strings.HasLanguage(DOpus.Language) Then
+        LoadResourceString = Dopus.Strings.Get(ResourceName)
+    Else
+        LoadResourceString = Dopus.Strings.Get(ResourceName, "english")
     End If
 End Function
 
