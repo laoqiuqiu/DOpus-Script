@@ -28,7 +28,7 @@
 		<instruction>		Case 3 : cmd.RunCommand(&quot;Set QUICKFILTERCLEAR&quot;)</instruction>
 		<instruction>		Case 5 : cmd.RunCommand(&quot;Set QuickFilter &quot; &amp; S_With &amp; &quot;(0|1|2|3|4|5|6|7|8|9)&quot; &amp; E_With)</instruction>
 		<instruction>		Case 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 : cmd.runcommand(&quot;Set QuickFilter &quot; &amp; S_With &amp; Chr(ret + 90) &amp; E_With)</instruction>
-		<instruction>		Case 35 : cmd.RunCommand(&quot;Set QUICKFILTER &quot; &amp; S_With &amp; &quot;(&apos;~|`|!|@|&apos;#|$|^|+|-|_|;|&apos;(|&apos;)|{|}|[|])&quot; &amp; E_With)</instruction>
+		<instruction>		Case 34 : cmd.RunCommand(&quot;Set QUICKFILTER &quot; &amp; S_With &amp; &quot;(&apos;~|`|!|@|&apos;#|$|^|+|-|_|;|&apos;(|&apos;)|{|}|[|])&quot; &amp; E_With)</instruction>
 		<instruction>	End Select</instruction>
 		<instruction>End Function</instruction>
 	</function>
