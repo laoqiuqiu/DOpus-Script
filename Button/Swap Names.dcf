@@ -3,11 +3,16 @@
 	<label>Swap Names</label>
 	<icon1>#rename</icon1>
 	<function type="normal">
+		<instruction>@disablenosel:numfiles=2</instruction>
+		<instruction>@nodeselect</instruction>
+		<instruction />
 		<instruction>Rename PATTERN * TO *</instruction>
+		<instruction />
 		<instruction>@script vbscript</instruction>
 		<instruction />
 		<instruction>Option Explicit</instruction>
-		<instruction />'https://resource.dopus.com/t/swap-the-names-of-two-files/11743
+		<instruction>&apos;https://resource.dopus.com/t/swap-the-names-of-two-files/11743</instruction>
+		<instruction />
 		<instruction>Dim strPrevName, strTempName</instruction>
 		<instruction>Randomize()</instruction>
 		<instruction />
