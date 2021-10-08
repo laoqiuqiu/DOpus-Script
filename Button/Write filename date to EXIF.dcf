@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>Write filename date to EXIF</label>
+	<icon1>#newcommand</icon1>
+	<function type="script">
+		<instruction />
+		<instruction>@script VBScript</instruction>
+		<instruction>Option Explicit</instruction>
+		<instruction>Function OnClick(ByRef clickData)</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>	DOpus.ClearOutput</instruction>
+		<instruction>	Dim cmd, lister, tab, selItem, selItems, folderEnum, folderItem, fileName, cmdText</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>	Set cmd = clickData.func.command</instruction>
+		<instruction>	cmd.deselect = false &apos; Prevent automatic deselection</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>	cmd.RunCommand &quot;Set VIEW=Details&quot;</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>	DOpus.Output &quot;Selected items in &quot; &amp; clickData.func.sourcetab.path &amp; &quot;:&quot;</instruction>
+		<instruction>	If clickData.func.sourcetab.selected.count = 0 Then</instruction>
+		<instruction>		DOpus.Output &quot;  (none)&quot;</instruction>
+		<instruction>	Else</instruction>
+		<instruction>		Set selItems = clickData.func.sourcetab.selected</instruction>
+		<instruction>		For Each selItem in selItems</instruction>
+		<instruction>			If (selItem.is_dir) Then</instruction>
+		<instruction>				DOpus.Output &quot;  (d) &quot; &amp; selItem.RealPath</instruction>
+		<instruction>			Else</instruction>
+		<instruction>				DOpus.Output &quot;  (f) &quot; &amp; selItem.RealPath</instruction>
+		<instruction>				DOpus.Output &quot;  datetaken is empty: &quot; &amp; IsEmpty(selItem.Metadata.image.datetaken)</instruction>
+		<instruction>				If IsEmpty(selItem.Metadata.image.datetaken) Then</instruction>
+		<instruction>					cmdText = &quot;SetAttr FILE=&quot; &amp; Quote(selItem.RealPath) &amp; &quot; META &quot; &amp; Quote(&quot;datetaken:&quot; &amp; GetDate(selItem.name_stem))</instruction>
+		<instruction>					DOpus.Output &quot;	&quot; &amp; cmdText</instruction>
+		<instruction>					cmd.RunCommand cmdText</instruction>
+		<instruction>				Else</instruction>
+		<instruction>					DOpus.Output &quot;  datetaken is: &quot; &amp; selItem.Metadata.image.datetaken</instruction>
+		<instruction>				End If</instruction>
+		<instruction>			End If</instruction>
+		<instruction>		Next</instruction>
+		<instruction>	End If</instruction>
+		<instruction>	&apos; ---------------------------------------------------------</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>Function Quote(StrValue)</instruction>
+		<instruction>	Quote = ChrW(34) &amp; StrValue &amp; ChrW(34)</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>&apos;get date from filename, file name format: YYYYMMDDhhnnss</instruction>
+		<instruction>Function GetDate(FileName)</instruction>
+		<instruction>	Dim DateStr, TimeStr</instruction>
+		<instruction>	DateStr = &quot;D#&quot; &amp; Left(FileName, 8)</instruction>
+		<instruction>	TimeStr = &quot;T#&quot; &amp; Right(FileName, 6)</instruction>
+		<instruction>	GetDate = DOpus.Create.Date(DateStr &amp; TimeStr)</instruction>
+		<instruction>End Function</instruction>
+	</function>
+</button>
