@@ -42,6 +42,8 @@ End Function
 Function CalcAvgSize(ByRef Tab)
 	Dim Files_Size
 	Set Files_Size = DOpus.FSUtil.NewFileSize(Tab.Stats.FileBytes)
-	Files_Size.Div Tab.Stats.Files
-	CalcAvgSize = Files_Size.Fmt
+	If Files_Size.CY > 0 Then
+		Files_Size.Div Tab.Stats.Files
+		CalcAvgSize = Files_Size.Fmt
+	End If
 End Function
