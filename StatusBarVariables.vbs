@@ -24,10 +24,8 @@ End Function
 ' Called when a tab is activated
 Function OnActivateTab(activateTabData)
 	Dim Tab
-	If activateTabData.Result Then
-		Set Tab = activateTabData.newtab
-		Tab.vars.Set "AvgSize", CalcAvgSize(Tab)
-	End If
+	Set Tab = activateTabData.newtab
+	Tab.vars.Set "AvgSize", CalcAvgSize(Tab)
 End Function
 
 ' Called after a new folder is read in a tab
