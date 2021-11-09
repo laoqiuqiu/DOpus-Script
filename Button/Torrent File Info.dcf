@@ -6,6 +6,10 @@
 	<function type="script">
 		<instruction>@disablenosel:numfiles=1,type=*.torrent</instruction>
 		<instruction>@script VBScript</instruction>
+		<instruction>&apos; show .torrent file information!</instruction>
+		<instruction>&apos; qiuqiu</instruction>
+		<instruction>&apos; http://script.dopus.net/</instruction>
+		<instruction />
 		<instruction>Option Explicit</instruction>
 		<instruction />
 		<instruction>Function OnClick(ByRef clickData)</instruction>
