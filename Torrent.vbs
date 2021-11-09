@@ -146,7 +146,7 @@ Private Function BytesToHex(Bytes)
     For I = 0 To L
       A(I) = Right("00" & Hex(AscB(MidB(Bytes, I+1, 1))), 2)
     Next
-    BytesToHex = Join(A)
+    BytesToHex = Join(A, "")
   End If
 End Function
 
@@ -184,7 +184,7 @@ Function Decode(In_Stream, ByRef Char)
       Dim List()
       Char = In_Stream.ReadChar
       Do While Char <> "e"
-        ArrayAdd List, Decode(Stream, Char)
+        ArrayAdd List, Decode(In_Stream, Char)
         Char = In_stream.ReadChar
       Loop
       Decode = List
@@ -192,13 +192,13 @@ Function Decode(In_Stream, ByRef Char)
       Dim Key, Dict : Set Dict = CreateObject("scripting.dictionary")
       Char = In_Stream.ReadChar
       Do While Char <> "e"
-        Key = Decode(Stream, Char)
+        Key = Decode(In_Stream, Char)
         Char = In_Stream.ReadChar
         Select Case Key
           Case "ed2k", "md5sum", "filehash", "pieces" ' Non-string value
             Dict.Add Key, In_Stream.ReadBytes(CLng(Char & In_Stream.ReadUntil(":")))
           Case Else
-            Dict.Add Key, Decode(Stream, Char)
+            Dict.Add Key, Decode(In_Stream, Char)
         End Select
         Char = In_Stream.ReadChar
       Loop
