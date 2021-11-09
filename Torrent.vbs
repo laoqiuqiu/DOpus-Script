@@ -9,6 +9,7 @@ Class BinaryStream
   End Sub
   
   Private Sub Class_Terminate   ' Setup Terminate event.
+    Stream.Close
     Set Stream = Nothing
   End Sub
   
@@ -49,11 +50,25 @@ Class BinaryStream
     Set UTF8 = Nothing
   End Function
   
+  Private Sub ResetStream
+    If Stream.State > 0 Then Stream.Close
+    If Stream.State = 0 Then Stream.Open
+  End Sub
+  
   Public Sub LoadFromFile(FileName)
-    Stream.LoadFromFile(FileName)
+    ResetStream
+    With CreateObject("ADODB.Stream")
+      .Type = 1
+      .Mode = 3
+      .Open
+      .LoadFromFile(F1)
+      .CopyTo Stream
+    End With
+    Position = 0
   End Sub
   
   Public Function LoadFromString(Str)
+    ResetStream
     Stream.Write UTF8Encode(Str)
     LoadFromString = Size
     Position = 0
@@ -63,6 +78,10 @@ Class BinaryStream
     ReadByte = AscB(Stream.Read(1))
   End Function
   
+  Public Function ReadBytes(Length)
+    ReadBytes = Stream.Read(Length)
+  End Function
+
   Public Function ReadChar
     ReadChar = ChrW(ReadByte)
   End Function
@@ -90,18 +109,63 @@ Class BinaryStream
   End Sub
   
   Public Property Let Position(Offset)
-  Stream.Position = Offset
+    Stream.Position = Offset
   End Property
   
   Public Property Get Position
-  Position = Stream.Position
+    Position = Stream.Position
   End Property
   
   Public Property Get Size
-  Size = Stream.Size
+    Size = Stream.Size
   End Property
   
 End Class
+
+Sub ArrayAdd(ByRef arr, ByVal Value)
+  If IsArray(arr) Then
+    On Error Resume Next
+    Dim ub :ub = UBound(arr)
+    If Err.Number <> 0 Then ub = -1
+    ReDim Preserve arr(ub + 1)
+    Select Case VarType(Value)
+      Case 9, 12, 13
+        Set arr(UBound(arr)) = Value
+      Case Else
+        arr(UBound(arr)) = Value
+    End Select
+  End If
+End Sub
+
+Private Function BytesToHex(Bytes)
+  Dim I, L, A()
+  If VarType(Bytes) = 8209 Then
+    L = UBound(Bytes) - 1
+    ReDim A(L)
+    If LenB(Bytes) = 0 Then Exit Function
+    For I = 0 To L
+      A(I) = Right("00" & Hex(AscB(MidB(Bytes, I+1, 1))), 2)
+    Next
+    BytesToHex = Join(A)
+  End If
+End Function
+
+Function GetArrayDim(ByVal arr)
+  Dim i
+  If IsArray(arr) Then
+    For i = 1 To 60
+      On Error Resume Next
+      Call UBound(arr, i)
+      If Err.Number <> 0 Then
+        GetArrayDim = i - 1
+        Exit Function
+      End If
+    Next
+    GetArrayDim = i
+  Else
+    GetArrayDim = Null
+  End If
+End Function
 
 Function Decode(In_Stream, ByRef Char)
   Select Case Char
@@ -109,22 +173,33 @@ Function Decode(In_Stream, ByRef Char)
       Decode = In_Stream.ReadUTF8String(CLng(Char & In_Stream.ReadUntil(":")))
     Case "i"
       Decode = CCur(In_Stream.ReadUntil("e"))
-    Case "l" ' list(index)(0) = list_item
-      Dim List : Set List = CreateObject("System.Collections.ArrayList")
+    Case "l"
+'      Dim List : Set List = CreateObject("System.Collections.ArrayList")
+'      Char = In_Stream.ReadChar
+'      Do While Char <> "e"
+'        List.Add Decode(Stream, Char)
+'        Char = In_stream.ReadChar
+'      Loop
+'      Set Decode = List
+      Dim List()
       Char = In_Stream.ReadChar
       Do While Char <> "e"
-        List.Add Decode(Stream, Char)
+        ArrayAdd List, Decode(Stream, Char)
         Char = In_stream.ReadChar
       Loop
-      Set Decode = List
+      Decode = List
     Case "d"
-      Dim Dict : Set Dict = CreateObject("scripting.dictionary")
-      Dim Key
+      Dim Key, Dict : Set Dict = CreateObject("scripting.dictionary")
       Char = In_Stream.ReadChar
       Do While Char <> "e"
         Key = Decode(Stream, Char)
         Char = In_Stream.ReadChar
-        Dict.Add Key, Decode(Stream, Char)
+        Select Case Key
+          Case "ed2k", "md5sum", "filehash", "pieces" ' Non-string value
+            Dict.Add Key, In_Stream.ReadBytes(CLng(Char & In_Stream.ReadUntil(":")))
+          Case Else
+            Dict.Add Key, Decode(Stream, Char)
+        End Select
         Char = In_Stream.ReadChar
       Loop
       Set Decode = Dict
