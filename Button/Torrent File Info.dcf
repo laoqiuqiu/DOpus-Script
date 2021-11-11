@@ -18,42 +18,67 @@
 		<instruction>    Dlg.Window = clickData.func.sourcetab</instruction>
 		<instruction>    Dlg.Template = &quot;dlgTorrentInfo&quot;</instruction>
 		<instruction>	Dlg.Title = &quot;Torrent File Info - &quot; &amp; clickData.func.sourcetab.selected_files(0)</instruction>
-		<instruction>	Dlg.Create</instruction>
+		<instruction>	Dlg.Create : Dlg.Show</instruction>
 		<instruction>	Set Stream = New BinaryStream</instruction>
+		<instruction />
+		<instruction />
 		<instruction>	Stream.LoadFromFile clickData.func.sourcetab.selected_files(0)&apos;&quot;C:\Users\guoqiuqiu\Downloads\1d16d78bf72623f23124e5d9f73c370375e866d9.torrent&quot;</instruction>
 		<instruction>	Char = Stream.ReadChar</instruction>
 		<instruction>	Set Torrent = Decode(Stream, Char)</instruction>
+		<instruction />
+		<instruction>	Dlg.Control(&quot;lsvFiles&quot;).Columns(0).Width = 800</instruction>
+		<instruction>	Dlg.Control(&quot;lsvFiles&quot;).Columns(1).Width = 120</instruction>
 		<instruction>	Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtComment&quot;).value = Torrent(&quot;comment&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtCreate_By&quot;).value = Torrent(&quot;created by&quot;)</instruction>
-		<instruction>	If Torrent.Exists(&quot;creation date&quot;) Then	Dlg.Control(&quot;edtCreate_Date&quot;).value = DateAdd(&quot;s&quot;, Torrent(&quot;creation date&quot;), #1970/01/01 00:00:00#) &amp; &quot; UTC&quot;</instruction>
-		<instruction>	Dlg.Control(&quot;edtEncoding&quot;).value = Torrent(&quot;encoding&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtPieceInfo&quot;).value = Torrent(&quot;info&quot;)(&quot;piece length&quot;) / 1024 &amp; &quot;KiB / &quot; &amp; LenB(Torrent(&quot;info&quot;)(&quot;pieces&quot;)) / 20</instruction>
-		<instruction>	Dlg.Control(&quot;edtpublisher&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtPublisher_URL&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher-url&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtHash&quot;).value = &quot;Not Implemented&quot;&apos; Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
-		<instruction>	&apos;Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
+		<instruction>	Dlg.Control(&quot;edtAnnounce&quot;).value = Torrent(&quot;announce&quot;)</instruction>
 		<instruction />
 		<instruction>	Dim announce_list()</instruction>
 		<instruction>	ReDim announce_list(UBound(Torrent(&quot;announce-list&quot;)))</instruction>
 		<instruction>	For I = 0 To UBound(Torrent(&quot;announce-list&quot;))</instruction>
 		<instruction>	  announce_list(I) = Torrent(&quot;announce-list&quot;)(I)(0)</instruction>
 		<instruction>	Next</instruction>
-		<instruction>	Dlg.Control(&quot;edtTracker&quot;).value = Join(announce_list, vbNewLine)</instruction>
+		<instruction>	Dlg.Control(&quot;edtAnnounce_List&quot;).value = Join(announce_list, vbNewLine)</instruction>
 		<instruction />
-		<instruction>	Dim ListView, ItemIndex</instruction>
+		<instruction>	Dlg.Control(&quot;edtComment&quot;).value = Torrent(&quot;comment&quot;)</instruction>
+		<instruction>	Dlg.Control(&quot;edtCreate_By&quot;).value = Torrent(&quot;created by&quot;)</instruction>
+		<instruction>	If Torrent.Exists(&quot;creation date&quot;) Then	Dlg.Control(&quot;edtCreate_Date&quot;).value = DateAdd(&quot;s&quot;, Torrent(&quot;creation date&quot;), #1970/01/01 00:00:00#) &amp; &quot; UTC&quot;</instruction>
+		<instruction>	Dlg.Control(&quot;edtEncoding&quot;).value = Torrent(&quot;encoding&quot;)</instruction>
+		<instruction>	Dlg.Control(&quot;edtPieceInfo&quot;).value = Torrent(&quot;info&quot;)(&quot;piece length&quot;) / 1024 &amp; &quot; KiB / &quot; &amp; LenB(Torrent(&quot;info&quot;)(&quot;pieces&quot;)) / 20</instruction>
+		<instruction>	Dlg.Control(&quot;edtpublisher&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher&quot;)</instruction>
+		<instruction>	Dlg.Control(&quot;edtPublisher_URL&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher-url&quot;)</instruction>
+		<instruction>	Dlg.Control(&quot;edtHash&quot;).value = &quot;Not Implemented&quot;&apos; Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
+		<instruction>	&apos;Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
+		<instruction />
+		<instruction>	Dim ListView, ItemIndex, Item, Count</instruction>
 		<instruction>	Set ListView = Dlg.Control(&quot;lsvFiles&quot;)</instruction>
 		<instruction>	Set TotalSize = DOpus.FSUtil.NewFileSize(0)</instruction>
-		<instruction>	For Each I In Torrent(&quot;info&quot;)(&quot;files&quot;)</instruction>
-		<instruction>		ItemIndex = ListView.AddItem(Join(I(&quot;path&quot;), &quot;\&quot;))</instruction>
-		<instruction>		TotalSize.Add I(&quot;length&quot;)</instruction>
-		<instruction>		ListView.GetItemAt(ItemIndex).SubItems(0) = DOpus.FSUtil.NewFileSize(I(&quot;length&quot;)).fmt</instruction>
-		<instruction>	Next</instruction>
+		<instruction>	If Torrent(&quot;info&quot;).Exists(&quot;files&quot;) Then</instruction>
+		<instruction>		Count = UBound(Torrent(&quot;info&quot;)(&quot;files&quot;))</instruction>
+		<instruction>		For Each I In Torrent(&quot;info&quot;)(&quot;files&quot;)</instruction>
+		<instruction>			ItemIndex = ListView.AddItem(Join(I(&quot;path&quot;), &quot;\&quot;))</instruction>
+		<instruction>			Set Item = ListView.GetItemAt(ItemIndex)</instruction>
+		<instruction>			TotalSize.Add I(&quot;length&quot;)</instruction>
+		<instruction>			Item.SubItems(0) = DOpus.FSUtil.NewFileSize(I(&quot;length&quot;)).fmt</instruction>
+		<instruction>			Item.Icon = DOpus.FSUtil.NewPath(Item.Name).ext</instruction>
+		<instruction>			&apos;Item.Icon = &quot;.&quot; &amp; CreateObject(&quot;Scripting.FileSystemObject&quot;).GetExtensionName(Item.Name)</instruction>
+		<instruction>		Next</instruction>
+		<instruction>	Else</instruction>
+		<instruction>		ItemIndex = ListView.AddItem(Torrent(&quot;name&quot;))</instruction>
+		<instruction>		ListView.GetItemAt(ItemIndex).SubItems(0) = DOpus.FSUtil.NewFileSize(Torrent(&quot;length&quot;)).fmt</instruction>
+		<instruction>		ListView.GetItemAt(ItemIndex).Icon = DOpus.FSUtil.NewPath(Torrent(&quot;name&quot;)).ext</instruction>
+		<instruction>		TotalSize.Add Torrent(&quot;length&quot;)</instruction>
+		<instruction>		Count = 1</instruction>
+		<instruction>	End If</instruction>
 		<instruction />
-		<instruction>	Dlg.Control(&quot;stTotalSize&quot;).Label = &quot;TotalSize: &quot; &amp; TotalSize.fmt</instruction>
+		<instruction>	Dlg.Control(&quot;stTotalSize&quot;).Label = &quot;Total: &quot; &amp; Count &amp; &quot; / &quot; &amp; TotalSize.fmt</instruction>
 		<instruction>	ListView.Columns(0).Resize = True</instruction>
-		<instruction>	ListView.Columns.AutoSize</instruction>
-		<instruction>    Dlg.RunDlg	</instruction>
+		<instruction>	&apos;ListView.Columns.AutoSize</instruction>
+		<instruction />
+		<instruction>	Dim Msg</instruction>
+		<instruction>    Do</instruction>
+		<instruction>        Set Msg = Dlg.GetMsg</instruction>
+		<instruction>        If Not Msg.result Then Exit Do</instruction>
+		<instruction>    Loop</instruction>
+		<instruction>&apos;    Dlg.RunDlg	</instruction>
 		<instruction>End Function</instruction>
 		<instruction />
 		<instruction>Class BinaryStream</instruction>
@@ -181,6 +206,9 @@
 		<instruction>  </instruction>
 		<instruction>End Class</instruction>
 		<instruction />
+		<instruction>Function GetExt(FileName)</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
 		<instruction>Sub ArrayAdd(ByRef arr, ByVal Value)</instruction>
 		<instruction>  If IsArray(arr) Then</instruction>
 		<instruction>    On Error Resume Next</instruction>
@@ -254,24 +282,26 @@
 		<instruction>		&lt;dialog fontface=&quot;Microsoft YaHei UI&quot; fontsize=&quot;9&quot; height=&quot;253&quot; lang=&quot;english&quot; resize=&quot;yes&quot; standard_buttons=&quot;ok&quot; title=&quot;Torrent Info - &quot; width=&quot;580&quot;&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stName&quot; title=&quot;Name&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;4&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtName&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;4&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;Comment&quot; title=&quot;Comment&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;20&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtComment&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;20&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreated_By&quot; title=&quot;Created By&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;36&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_By&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;36&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreation_Date&quot; title=&quot;Creation Date&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;52&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_Date&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;52&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stEncoding&quot; title=&quot;Encoding&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;68&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtEncoding&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;52&quot; x=&quot;56&quot; y=&quot;68&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher&quot; title=&quot;Publisher&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;84&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;84&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher_URL&quot; title=&quot;Publisher-URL&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;100&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPublisher_URL&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;100&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPieceInfo&quot; title=&quot;Piece Info&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;32&quot; x=&quot;116&quot; y=&quot;68&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPieceInfo&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;68&quot; x=&quot;152&quot; y=&quot;68&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stHash&quot; title=&quot;Hash&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;116&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtHash&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;116&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stTracker&quot; title=&quot;Tracker&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;132&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;100&quot; multiline=&quot;yes&quot; name=&quot;edtTracker&quot; readonly=&quot;yes&quot; resize=&quot;h&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;132&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stAnnounce&quot; title=&quot;Announce&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;20&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtAnnounce&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;20&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stAnnounce_List&quot; title=&quot;Announce List&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;36&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;84&quot; multiline=&quot;yes&quot; name=&quot;edtAnnounce_List&quot; readonly=&quot;yes&quot; resize=&quot;h&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;36&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;Comment&quot; title=&quot;Comment&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;124&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtComment&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;124&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreated_By&quot; title=&quot;Created By&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;140&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_By&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;140&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreation_Date&quot; title=&quot;Creation Date&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;156&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_Date&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;156&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stEncoding&quot; title=&quot;Encoding&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtEncoding&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;52&quot; x=&quot;56&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher&quot; title=&quot;Publisher&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;188&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;188&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher_URL&quot; title=&quot;Publisher-URL&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;204&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPublisher_URL&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;204&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPieceInfo&quot; title=&quot;Piece Info&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;32&quot; x=&quot;116&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPieceInfo&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;68&quot; x=&quot;152&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stHash&quot; title=&quot;Hash&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;220&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtHash&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;220&quot; /&gt;</instruction>
 		<instruction>			&lt;control fullrow=&quot;yes&quot; height=&quot;228&quot; name=&quot;lsvFiles&quot; resize=&quot;wh&quot; smallicons=&quot;yes&quot; type=&quot;listview&quot; viewmode=&quot;details&quot; width=&quot;348&quot; x=&quot;228&quot; y=&quot;4&quot;&gt;</instruction>
 		<instruction>				&lt;columns&gt;</instruction>
 		<instruction>					&lt;item text=&quot;Name&quot; /&gt;</instruction>
