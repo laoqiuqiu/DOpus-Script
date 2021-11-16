@@ -31,35 +31,42 @@
 		<instruction>	Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
 		<instruction>	Dlg.Control(&quot;edtAnnounce&quot;).value = Torrent(&quot;announce&quot;)</instruction>
 		<instruction />
-		<instruction>	Dim announce_list()</instruction>
-		<instruction>	ReDim announce_list(UBound(Torrent(&quot;announce-list&quot;)))</instruction>
-		<instruction>	For I = 0 To UBound(Torrent(&quot;announce-list&quot;))</instruction>
-		<instruction>	  announce_list(I) = Torrent(&quot;announce-list&quot;)(I)(0)</instruction>
-		<instruction>	Next</instruction>
-		<instruction>	Dlg.Control(&quot;edtAnnounce_List&quot;).value = Join(announce_list, vbNewLine)</instruction>
-		<instruction />
+		<instruction>	If Torrent.Exists(&quot;announce-list&quot;) Then</instruction>
+		<instruction>		Dim announce_list()</instruction>
+		<instruction>		ReDim announce_list(UBound(Torrent(&quot;announce-list&quot;)))</instruction>
+		<instruction>		For I = 0 To UBound(Torrent(&quot;announce-list&quot;))</instruction>
+		<instruction>		  announce_list(I) = Torrent(&quot;announce-list&quot;)(I)(0)</instruction>
+		<instruction>		Next</instruction>
+		<instruction>		Dlg.Control(&quot;edtAnnounce_List&quot;).value = Join(announce_list, vbNewLine)</instruction>
+		<instruction>	End If</instruction>
 		<instruction>	Dlg.Control(&quot;edtComment&quot;).value = Torrent(&quot;comment&quot;)</instruction>
 		<instruction>	Dlg.Control(&quot;edtCreate_By&quot;).value = Torrent(&quot;created by&quot;)</instruction>
 		<instruction>	If Torrent.Exists(&quot;creation date&quot;) Then	Dlg.Control(&quot;edtCreate_Date&quot;).value = DateAdd(&quot;s&quot;, Torrent(&quot;creation date&quot;), #1970/01/01 00:00:00#) &amp; &quot; UTC&quot;</instruction>
 		<instruction>	Dlg.Control(&quot;edtEncoding&quot;).value = Torrent(&quot;encoding&quot;)</instruction>
 		<instruction>	Dlg.Control(&quot;edtPieceInfo&quot;).value = Torrent(&quot;info&quot;)(&quot;piece length&quot;) / 1024 &amp; &quot; KiB / &quot; &amp; LenB(Torrent(&quot;info&quot;)(&quot;pieces&quot;)) / 20</instruction>
-		<instruction>	Dlg.Control(&quot;edtpublisher&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtPublisher_URL&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher-url&quot;)</instruction>
-		<instruction>	Dlg.Control(&quot;edtHash&quot;).value = &quot;Not Implemented&quot;&apos; Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
+		<instruction />
+		<instruction>	If Torrent.Exists(&quot;publisher&quot;) Then Dlg.Control(&quot;edtpublisher&quot;).value = Torrent(&quot;publisher&quot;)</instruction>
+		<instruction>	If Torrent.Exists(&quot;publisher-url&quot;) Then Dlg.Control(&quot;edtPublisher_URL&quot;).value = Torrent(&quot;publisher-url&quot;)</instruction>
+		<instruction>	If Torrent(&quot;info&quot;).Exists(&quot;publisher&quot;) Then Dlg.Control(&quot;edtpublisher&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher&quot;)</instruction>
+		<instruction>	If Torrent(&quot;info&quot;).Exists(&quot;publisher-url&quot;) Then Dlg.Control(&quot;edtPublisher_URL&quot;).value = Torrent(&quot;info&quot;)(&quot;publisher-url&quot;)</instruction>
+		<instruction />
+		<instruction>	Dlg.Control(&quot;edtHash&quot;).value = InfoHash(Torrent(&quot;info&quot;))</instruction>
 		<instruction>	&apos;Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
 		<instruction />
 		<instruction>	Dim ListView, ItemIndex, Item, Count</instruction>
 		<instruction>	Set ListView = Dlg.Control(&quot;lsvFiles&quot;)</instruction>
 		<instruction>	Set TotalSize = DOpus.FSUtil.NewFileSize(0)</instruction>
 		<instruction>	If Torrent(&quot;info&quot;).Exists(&quot;files&quot;) Then</instruction>
-		<instruction>		Count = UBound(Torrent(&quot;info&quot;)(&quot;files&quot;))</instruction>
+		<instruction>&apos;		Count = UBound(Torrent(&quot;info&quot;)(&quot;files&quot;))</instruction>
 		<instruction>		For Each I In Torrent(&quot;info&quot;)(&quot;files&quot;)</instruction>
 		<instruction>			ItemIndex = ListView.AddItem(Join(I(&quot;path&quot;), &quot;\&quot;))</instruction>
 		<instruction>			Set Item = ListView.GetItemAt(ItemIndex)</instruction>
 		<instruction>			TotalSize.Add I(&quot;length&quot;)</instruction>
-		<instruction>			Item.SubItems(0) = DOpus.FSUtil.NewFileSize(I(&quot;length&quot;)).fmt</instruction>
+		<instruction>			Item.SubItems(0) = FormatSize(I(&quot;length&quot;))&apos; DOpus.FSUtil.NewFileSize(I(&quot;length&quot;)).fmt</instruction>
 		<instruction>			Item.Icon = DOpus.FSUtil.NewPath(Item.Name).ext</instruction>
 		<instruction>			&apos;Item.Icon = &quot;.&quot; &amp; CreateObject(&quot;Scripting.FileSystemObject&quot;).GetExtensionName(Item.Name)</instruction>
+		<instruction>			Count =Count + 1</instruction>
+		<instruction>			Dlg.Control(&quot;stTotalSize&quot;).Label = Join(Array(&quot;Files: &quot;, Count, &quot;/ Size: &quot;, FormatSize(TotalSize.cy * 10000)))</instruction>
 		<instruction>		Next</instruction>
 		<instruction>	Else</instruction>
 		<instruction>		ItemIndex = ListView.AddItem(Torrent(&quot;name&quot;))</instruction>
@@ -67,9 +74,11 @@
 		<instruction>		ListView.GetItemAt(ItemIndex).Icon = DOpus.FSUtil.NewPath(Torrent(&quot;name&quot;)).ext</instruction>
 		<instruction>		TotalSize.Add Torrent(&quot;length&quot;)</instruction>
 		<instruction>		Count = 1</instruction>
+		<instruction>		Dlg.Control(&quot;stTotalSize&quot;).Label = Join(Array(&quot;Files: &quot;, Count, &quot;/ Size: &quot;, FormatSize(TotalSize.cy * 10000)))</instruction>
 		<instruction>	End If</instruction>
 		<instruction />
-		<instruction>	Dlg.Control(&quot;stTotalSize&quot;).Label = &quot;Total: &quot; &amp; Count &amp; &quot; / &quot; &amp; TotalSize.fmt</instruction>
+		<instruction>&apos;	Dlg.Control(&quot;stTotalSize&quot;).Label = Join(Array(&quot;Files: &quot;, Count, &quot;/ Size: &quot;, FormatSize(TotalSize.cy * 10000)))</instruction>
+		<instruction />
 		<instruction>	ListView.Columns(0).Resize = True</instruction>
 		<instruction>	&apos;ListView.Columns.AutoSize</instruction>
 		<instruction />
@@ -81,10 +90,13 @@
 		<instruction>&apos;    Dlg.RunDlg	</instruction>
 		<instruction>End Function</instruction>
 		<instruction />
+		<instruction>&apos; BinaryStream</instruction>
 		<instruction>Class BinaryStream</instruction>
 		<instruction>  Private Stream</instruction>
+		<instruction>  Private UTF8</instruction>
 		<instruction>  </instruction>
 		<instruction>  Private Sub Class_Initialize   &apos; Setup Initialize event.</instruction>
+		<instruction>    Set UTF8 = CreateObject(&quot;System.Text.UTF8Encoding&quot;)</instruction>
 		<instruction>    Set Stream = CreateObject(&quot;ADODB.Stream&quot;)</instruction>
 		<instruction>    Stream.Type = 1</instruction>
 		<instruction>    Stream.Mode = 3</instruction>
@@ -93,6 +105,7 @@
 		<instruction>  </instruction>
 		<instruction>  Private Sub Class_Terminate   &apos; Setup Terminate event.</instruction>
 		<instruction>    Set Stream = Nothing</instruction>
+		<instruction>    Set UTF8 = Nothing</instruction>
 		<instruction>  End Sub</instruction>
 		<instruction>  </instruction>
 		<instruction>  Private Function Array2Bytes(VBS_Array)</instruction>
@@ -118,20 +131,6 @@
 		<instruction>    End If</instruction>
 		<instruction>  End Function</instruction>
 		<instruction>  </instruction>
-		<instruction>  Private Function UTF8Decode(Bytes)</instruction>
-		<instruction>    Dim UTF8 : Set UTF8 = CreateObject(&quot;System.Text.UTF8Encoding&quot;)</instruction>
-		<instruction>    UTF8Decode = &quot;&quot;</instruction>
-		<instruction>    If VarType(Bytes) = 8209 Then UTF8Decode = UTF8.GetString((Bytes))</instruction>
-		<instruction>    Set UTF8 = Nothing</instruction>
-		<instruction>  End Function</instruction>
-		<instruction>  </instruction>
-		<instruction>  Private Function UTF8Encode(Strings)</instruction>
-		<instruction>    Dim UTF8 : Set UTF8 = CreateObject(&quot;System.Text.UTF8Encoding&quot;)</instruction>
-		<instruction>    UTF8Encode = Empty</instruction>
-		<instruction>    If VarType(Strings) = 8 Then UTF8Encode = UTF8.GetBytes_4(Strings)</instruction>
-		<instruction>    Set UTF8 = Nothing</instruction>
-		<instruction>  End Function</instruction>
-		<instruction>  </instruction>
 		<instruction>  Private Sub ResetStream</instruction>
 		<instruction>    If Stream.State &gt; 0 Then Stream.Close</instruction>
 		<instruction>    If Stream.State = 0 Then Stream.Open</instruction>
@@ -147,8 +146,6 @@
 		<instruction>      .CopyTo Stream</instruction>
 		<instruction>      Position = 0</instruction>
 		<instruction>    End With</instruction>
-		<instruction />
-		<instruction>    &apos;Stream.LoadFromFile(FileName)</instruction>
 		<instruction>  End Sub</instruction>
 		<instruction>  </instruction>
 		<instruction>  Public Function LoadFromString(Str)</instruction>
@@ -192,19 +189,50 @@
 		<instruction>    End Select</instruction>
 		<instruction>  End Sub</instruction>
 		<instruction>  </instruction>
+		<instruction>  Public Sub SaveToFile(FileName)</instruction>
+		<instruction>    Stream.SaveToFile FileName, 2</instruction>
+		<instruction>  End Sub</instruction>
+		<instruction>  </instruction>
+		<instruction>  Public Function UTF8Decode(Bytes)</instruction>
+		<instruction>    UTF8Decode = &quot;&quot;</instruction>
+		<instruction>    If VarType(Bytes) = 8209 Then UTF8Decode = UTF8.GetString((Bytes))</instruction>
+		<instruction>  End Function</instruction>
+		<instruction>  </instruction>
+		<instruction>  Public Function UTF8Encode(Strings)</instruction>
+		<instruction>    UTF8Encode = Empty</instruction>
+		<instruction>    If VarType(Strings) = 8 Then UTF8Encode = UTF8.GetBytes_4(Strings)</instruction>
+		<instruction>  End Function</instruction>
+		<instruction />
+		<instruction>  Public Function WriteBytes(Buffer) &apos; Data as Bytes()</instruction>
+		<instruction>    If VarType(Bytes) = 8209 Then Stream.Write (Buffer)</instruction>
+		<instruction>  End Function</instruction>
+		<instruction />
+		<instruction>  Public Function WriteUTF8String(Strings) &apos; Unicode string</instruction>
+		<instruction>    Stream.Write UTF8Encode(Strings)</instruction>
+		<instruction>  End Function</instruction>
+		<instruction>  </instruction>
+		<instruction>  Public Property Get Bytes</instruction>
+		<instruction>    Dim Old_Pos</instruction>
+		<instruction>    Old_Pos = Position</instruction>
+		<instruction>    Position = 0</instruction>
+		<instruction>    Bytes = Stream.Read(-1)</instruction>
+		<instruction>    Position = Old_Pos</instruction>
+		<instruction>  End Property</instruction>
+		<instruction />
 		<instruction>  Public Property Let Position(Offset)</instruction>
-		<instruction>  Stream.Position = Offset</instruction>
+		<instruction>    Stream.Position = Offset</instruction>
 		<instruction>  End Property</instruction>
 		<instruction>  </instruction>
 		<instruction>  Public Property Get Position</instruction>
-		<instruction>  Position = Stream.Position</instruction>
+		<instruction>    Position = Stream.Position</instruction>
 		<instruction>  End Property</instruction>
 		<instruction>  </instruction>
 		<instruction>  Public Property Get Size</instruction>
-		<instruction>  Size = Stream.Size</instruction>
+		<instruction>    Size = Stream.Size</instruction>
 		<instruction>  End Property</instruction>
 		<instruction>  </instruction>
 		<instruction>End Class</instruction>
+		<instruction />
 		<instruction />
 		<instruction>Function GetExt(FileName)</instruction>
 		<instruction>End Function</instruction>
@@ -224,7 +252,7 @@
 		<instruction>  End If</instruction>
 		<instruction>End Sub</instruction>
 		<instruction />
-		<instruction>Private Function BytesToHex(Bytes)</instruction>
+		<instruction>Function BytesToHex(Bytes)</instruction>
 		<instruction>  Dim I, L, A()</instruction>
 		<instruction>  If VarType(Bytes) = 8209 Then</instruction>
 		<instruction>    L = UBound(Bytes)</instruction>
@@ -234,6 +262,32 @@
 		<instruction>      A(I) = Right(&quot;00&quot; &amp; Hex(AscB(MidB(Bytes, I+1, 1))), 2)</instruction>
 		<instruction>    Next</instruction>
 		<instruction>    BytesToHex = Join(A, &quot;&quot;)</instruction>
+		<instruction>  End If</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>Function SHA1(Bytes)</instruction>
+		<instruction>  Dim i, SHA1Bytes, Cryptography</instruction>
+		<instruction>  Set Cryptography = CreateObject(&quot;System.Security.Cryptography.SHA1Managed&quot;)</instruction>
+		<instruction>  SHA1Bytes = Cryptography.ComputeHash_2((Bytes))</instruction>
+		<instruction>  SHA1 = BytesToHex(SHA1Bytes)</instruction>
+		<instruction>  Set Cryptography = Nothing</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>Function FormatSize(SZ)</instruction>
+		<instruction>  Dim i, Units : Units = Array(&quot; Bytes&quot;, &quot;KB&quot;, &quot;MB&quot;, &quot;GB&quot;, &quot;TB&quot;, &quot;PB&quot;, &quot;EB&quot;, &quot;ZB&quot;, &quot;YB&quot;)</instruction>
+		<instruction>  Do While SZ &gt;= 1024</instruction>
+		<instruction>    i = i + 1</instruction>
+		<instruction>    SZ = SZ / 1024</instruction>
+		<instruction>  Loop</instruction>
+		<instruction>  FormatSize = Join(Array(Round(SZ, 2), Units(i)), &quot; &quot;)</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>Function InfoHash(Info_Dict)</instruction>
+		<instruction>  If LCase(TypeName(Info_Dict)) = &quot;dictionary&quot; Then</instruction>
+		<instruction>    Dim InfoStream : Set InfoStream = New BinaryStream</instruction>
+		<instruction>    Encode InfoStream, Info_Dict</instruction>
+		<instruction>    InfoHash = SHA1(InfoStream.Bytes)</instruction>
+		<instruction>    Set InfoStream = Nothing</instruction>
 		<instruction>  End If</instruction>
 		<instruction>End Function</instruction>
 		<instruction />
@@ -276,32 +330,63 @@
 		<instruction>  End Select</instruction>
 		<instruction>End Function</instruction>
 		<instruction />
+		<instruction>Function Encode(Out_Stream, Element)</instruction>
+		<instruction>  Dim E_Type</instruction>
+		<instruction>  E_Type = TypeName(Element)</instruction>
+		<instruction>  Select Case LCase(TypeName(Element))</instruction>
+		<instruction>    Case &quot;string&quot;</instruction>
+		<instruction>      Dim Length, UTF8Bytes</instruction>
+		<instruction>      UTF8Bytes = Out_Stream.UTF8Encode(Element)</instruction>
+		<instruction>      Out_Stream.WriteUTF8String LenB(UTF8Bytes) &amp; &quot;:&quot;</instruction>
+		<instruction>      Out_Stream.WriteBytes UTF8Bytes</instruction>
+		<instruction>    Case &quot;byte&quot;, &quot;integer&quot;, &quot;long&quot;, &quot;single&quot;, &quot;double&quot;, &quot;currency&quot;, &quot;decimal&quot;</instruction>
+		<instruction>      Out_Stream.WriteUTF8String &quot;i&quot; &amp; Element &amp; &quot;e&quot;</instruction>
+		<instruction>    Case &quot;byte()&quot;</instruction>
+		<instruction>      Out_Stream.WriteUTF8String LenB(Element) &amp; &quot;:&quot;</instruction>
+		<instruction>      Out_Stream.WriteBytes (Element)</instruction>
+		<instruction>    Case &quot;variant()&quot;</instruction>
+		<instruction>      Dim Item</instruction>
+		<instruction>      Out_Stream.WriteUTF8String &quot;l&quot;</instruction>
+		<instruction>      For Each Item In Element</instruction>
+		<instruction>        Encode Out_Stream, Item</instruction>
+		<instruction>      Next</instruction>
+		<instruction>      Out_Stream.WriteUTF8String &quot;e&quot;</instruction>
+		<instruction>    Case &quot;dictionary&quot;</instruction>
+		<instruction>      Dim Key</instruction>
+		<instruction>      Out_Stream.WriteUTF8String &quot;d&quot;</instruction>
+		<instruction>      For Each Key In Element.Keys</instruction>
+		<instruction>        Encode Out_Stream, Key</instruction>
+		<instruction>        Encode Out_Stream, Element(Key)</instruction>
+		<instruction>      Next</instruction>
+		<instruction>      Out_Stream.WriteUTF8String &quot;e&quot;</instruction>
+		<instruction>  End Select</instruction>
+		<instruction>End Function</instruction>
 		<instruction>==SCRIPT RESOURCES</instruction>
 		<instruction>&lt;resources&gt;</instruction>
 		<instruction>	&lt;resource name=&quot;dlgTorrentInfo&quot; type=&quot;dialog&quot;&gt;</instruction>
 		<instruction>		&lt;dialog fontface=&quot;Microsoft YaHei UI&quot; fontsize=&quot;9&quot; height=&quot;253&quot; lang=&quot;english&quot; resize=&quot;yes&quot; standard_buttons=&quot;ok&quot; title=&quot;Torrent Info - &quot; width=&quot;580&quot;&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stName&quot; title=&quot;Name&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;4&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtName&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;4&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtName&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;4&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stAnnounce&quot; title=&quot;Announce&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;20&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtAnnounce&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;20&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtAnnounce&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;20&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stAnnounce_List&quot; title=&quot;Announce List&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;36&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;84&quot; multiline=&quot;yes&quot; name=&quot;edtAnnounce_List&quot; readonly=&quot;yes&quot; resize=&quot;h&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;36&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;84&quot; multiline=&quot;yes&quot; name=&quot;edtAnnounce_List&quot; readonly=&quot;yes&quot; resize=&quot;h&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;36&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;Comment&quot; title=&quot;Comment&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;124&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtComment&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;124&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtComment&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;124&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreated_By&quot; title=&quot;Created By&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;140&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_By&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;140&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_By&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;140&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stCreation_Date&quot; title=&quot;Creation Date&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;156&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_Date&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;156&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtCreate_Date&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;156&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stEncoding&quot; title=&quot;Encoding&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;172&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtEncoding&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;52&quot; x=&quot;56&quot; y=&quot;172&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher&quot; title=&quot;Publisher&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;188&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;188&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher_URL&quot; title=&quot;Publisher-URL&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;204&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPublisher_URL&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;204&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPieceInfo&quot; title=&quot;Piece Info&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;32&quot; x=&quot;116&quot; y=&quot;172&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPieceInfo&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;68&quot; x=&quot;152&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPieceInfo&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;72&quot; x=&quot;152&quot; y=&quot;172&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher&quot; title=&quot;Publisher&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;188&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;188&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher_URL&quot; title=&quot;Publisher-URL&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;204&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPublisher_URL&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;204&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stHash&quot; title=&quot;Hash&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;220&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtHash&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;164&quot; x=&quot;56&quot; y=&quot;220&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtHash&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;220&quot; /&gt;</instruction>
 		<instruction>			&lt;control fullrow=&quot;yes&quot; height=&quot;228&quot; name=&quot;lsvFiles&quot; resize=&quot;wh&quot; smallicons=&quot;yes&quot; type=&quot;listview&quot; viewmode=&quot;details&quot; width=&quot;348&quot; x=&quot;228&quot; y=&quot;4&quot;&gt;</instruction>
 		<instruction>				&lt;columns&gt;</instruction>
 		<instruction>					&lt;item text=&quot;Name&quot; /&gt;</instruction>
