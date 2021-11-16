@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>ZPatch File View</label>
+	<tip>View .ZPatch File</tip>
+	<icon1>#newcommand</icon1>
+	<function type="script">
+		<instruction>@disablenosel:numfiles=1,type=*.zpatch</instruction>
+		<instruction>@script VBScript</instruction>
+		<instruction>Option Explicit</instruction>
+		<instruction>Function OnClick(ByRef clickData)</instruction>
+		<instruction>	Dim Viewer, ZPatchFile, Header, Operation, DataSize, FileName, RawDataSize, ListView, Item, ItemIndex, FileCount</instruction>
+		<instruction>	Set Viewer = DOpus.Dlg</instruction>
+		<instruction>	With Viewer</instruction>
+		<instruction>		.Template = &quot;dlgViewer&quot;</instruction>
+		<instruction>		.Title = &quot;ZPatch File Viewer - &quot; &amp; clickData.func.sourcetab.selected_files(0)</instruction>
+		<instruction>		.Create</instruction>
+		<instruction>		.Show</instruction>
+		<instruction>		Set ListView = .Control(&quot;lstList&quot;)</instruction>
+		<instruction>	End With</instruction>
+		<instruction>	ListView.Columns(0).Width = 150</instruction>
+		<instruction>	ListView.Columns(1).Width = 780</instruction>
+		<instruction>	ListView.Columns(2).Width = 100</instruction>
+		<instruction>	Set ZPatchFile = clickData.func.sourcetab.selected_files(0).Open</instruction>
+		<instruction>	Set Header = ZPatchFile.Read(9)</instruction>
+		<instruction>	If Header.Compare(DOpus.Create.Blob(90, 80, 65, 84, 67, 72, 26), 0, 0, 7) = 0 Then</instruction>
+		<instruction>		Do While ZPatchFile.tell.cy &lt; ZPatchFile.size.cy</instruction>
+		<instruction>			Operation = ZPatchFile.Read(1)(0)</instruction>
+		<instruction>			DataSize = DOpus.FSUtil.NewFileSize(ZPatchFile.Read(8)).cy * 10000</instruction>
+		<instruction>			FileName = DOpus.Create.StringTools.Decode(ZPatchFile.Read(DataSize), &quot;utf-8&quot;)</instruction>
+		<instruction>			RawDataSize = DOpus.FSUtil.NewFileSize(ZPatchFile.Read(8)).cy * 10000</instruction>
+		<instruction>			ZPatchFile.Seek RawDataSize, &quot;c&quot;</instruction>
+		<instruction>			ItemIndex = ListView.AddItem(GetOperation(Operation), Operation)</instruction>
+		<instruction>			Select Case Operation</instruction>
+		<instruction>				Case 1 : ListView.GetItemAt(ItemIndex).fg = &quot;#FF0000&quot;</instruction>
+		<instruction>				Case 2 : ListView.GetItemAt(ItemIndex).fg = &quot;#139B36&quot;</instruction>
+		<instruction>				Case 3 : ListView.GetItemAt(ItemIndex).fg = &quot;#0000FF&quot;</instruction>
+		<instruction>				Case 4 : ListView.GetItemAt(ItemIndex).fg = &quot;#8000FF&quot;</instruction>
+		<instruction>			End Select</instruction>
+		<instruction>			ListView.GetItemAt(ItemIndex).SubItems(0) = FileName</instruction>
+		<instruction>			ListView.GetItemAt(ItemIndex).SubItems(1) = RawDataSize</instruction>
+		<instruction>			FileCount = FileCount + 1</instruction>
+		<instruction>		Loop</instruction>
+		<instruction>		Viewer.Control(&quot;stStatus&quot;).Label = &quot;ZPatch Version: &quot; &amp; Header(7) &amp; &quot; / File Count: &quot; &amp; FileCount</instruction>
+		<instruction>	End If</instruction>
+		<instruction>	ZPatchFile.Close</instruction>
+		<instruction />
+		<instruction>	Dim Msg</instruction>
+		<instruction>    Do</instruction>
+		<instruction>        Set Msg = Viewer.GetMsg</instruction>
+		<instruction>        If Not Msg.result Then Exit Do</instruction>
+		<instruction>    Loop</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>Function GetOperation(Value)</instruction>
+		<instruction>	Select Case Value</instruction>
+		<instruction>		Case 1    : GetOperation = &quot;Delete&quot;</instruction>
+		<instruction>		Case 2    : GetOperation = &quot;Add&quot;</instruction>
+		<instruction>		Case 3    : GetOperation = &quot;Replace&quot;</instruction>
+		<instruction>		Case 4    : GetOperation = &quot;Add Dir&quot;</instruction>
+		<instruction>		Case Else : GetOperation = &quot;Error&quot;</instruction>
+		<instruction>	End Select</instruction>
+		<instruction>End Function</instruction>
+		<instruction>==SCRIPT RESOURCES</instruction>
+		<instruction>&lt;resources&gt;</instruction>
+		<instruction>	&lt;resource name=&quot;dlgViewer&quot; type=&quot;dialog&quot;&gt;</instruction>
+		<instruction>		&lt;dialog fontface=&quot;Microsoft YaHei UI&quot; fontsize=&quot;9&quot; height=&quot;280&quot; lang=&quot;english&quot; standard_buttons=&quot;ok&quot; width=&quot;400&quot;&gt;</instruction>
+		<instruction>			&lt;control fullrow=&quot;yes&quot; height=&quot;254&quot; name=&quot;lstList&quot; resize=&quot;wh&quot; smallicons=&quot;yes&quot; type=&quot;listview&quot; viewmode=&quot;details&quot; width=&quot;392&quot; x=&quot;4&quot; y=&quot;4&quot;&gt;</instruction>
+		<instruction>				&lt;columns&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Operation&quot; /&gt;</instruction>
+		<instruction>					&lt;item text=&quot;FileName&quot; /&gt;</instruction>
+		<instruction>					&lt;item text=&quot;Data Size&quot; /&gt;</instruction>
+		<instruction>				&lt;/columns&gt;</instruction>
+		<instruction>			&lt;/control&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stStatus&quot; resize=&quot;y&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;252&quot; x=&quot;4&quot; y=&quot;263&quot; /&gt;</instruction>
+		<instruction>		&lt;/dialog&gt;</instruction>
+		<instruction>	&lt;/resource&gt;</instruction>
+		<instruction>&lt;/resources&gt;</instruction>
+	</function>
+</button>
