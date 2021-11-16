@@ -26,7 +26,7 @@
 		<instruction>	Char = Stream.ReadChar</instruction>
 		<instruction>	Set Torrent = Decode(Stream, Char)</instruction>
 		<instruction />
-		<instruction>	Dlg.Control(&quot;lsvFiles&quot;).Columns(0).Width = 700</instruction>
+		<instruction>	Dlg.Control(&quot;lsvFiles&quot;).Columns(0).Width = 750</instruction>
 		<instruction>	Dlg.Control(&quot;lsvFiles&quot;).Columns(1).Width = 120</instruction>
 		<instruction>	Dlg.Control(&quot;edtName&quot;).value = Torrent(&quot;info&quot;)(&quot;name&quot;)</instruction>
 		<instruction>	Dlg.Control(&quot;edtAnnounce&quot;).value = Torrent(&quot;announce&quot;)</instruction>
@@ -382,7 +382,7 @@
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPieceInfo&quot; resize=&quot;y&quot; title=&quot;Piece Info&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;32&quot; x=&quot;116&quot; y=&quot;172&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPieceInfo&quot; readonly=&quot;yes&quot; resize=&quot;y&quot; type=&quot;edit&quot; width=&quot;72&quot; x=&quot;152&quot; y=&quot;172&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher&quot; resize=&quot;y&quot; title=&quot;Publisher&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;188&quot; /&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;188&quot; /&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtpublisher&quot; readonly=&quot;yes&quot; resize=&quot;y&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;188&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stPublisher_URL&quot; resize=&quot;y&quot; title=&quot;Publisher-URL&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;204&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;edtPublisher_URL&quot; readonly=&quot;yes&quot; resize=&quot;y&quot; type=&quot;edit&quot; width=&quot;168&quot; x=&quot;56&quot; y=&quot;204&quot; /&gt;</instruction>
 		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;12&quot; name=&quot;stHash&quot; resize=&quot;y&quot; title=&quot;Hash&quot; type=&quot;static&quot; valign=&quot;center&quot; width=&quot;44&quot; x=&quot;8&quot; y=&quot;220&quot; /&gt;</instruction>
