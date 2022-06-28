@@ -16,19 +16,19 @@ Option Explicit
 	)
 	Dim UnitChars		'中文单位
 	UnitChars  = Array(_
-					Array("十", "拾"), _
-					Array("廿", "念"), _
-					Array("百", "佰"), _
-					Array("千", "仟"), _
-					Array("万", "萬"), _
-					Array("亿", "億"), _
-					Array("-"), _
-					Array("-"), _
-					Array("-"), _
-					array("-")  _
+		Array("十", "拾"), _
+		Array("廿", "念"), _
+		Array("百", "佰"), _
+		Array("千", "仟"), _
+		Array("万", "萬"), _
+		Array("亿", "億"), _
+		Array("-"), _
+		Array("-"), _
+		Array("-"), _
+		array("-")  _
 	)
 	Dim UnitValues : UnitValues = Array(10, 20, 100, 1000, 10000, 100000000)
-
+	Dim Sign : Sign = Array(1, -1)
 'False, True  : -1
 'False, False : 0
 'True, True   : 0
@@ -149,6 +149,18 @@ Function ChineseToULong(chs)
 	ChineseToULong = Result
 End Function
 
+Function ChineseToLong(ChsStr)
+	Dim s : s = Sign(Abs(Left(ChsStr, 1) = "负"))
+	Dim Result : Result = 0
+	Select Case Left(chsstr, 1)
+		Case "负", "正"
+			Result = ChineseToULong(Mid(ChsStr, 2))
+		Case Else
+			Result = ChineseToULong(ChsStr)
+	End Select
+	ChineseToLong = Result * s
+End Function
+						
 Sub test
   Dim test_array, i
   test_array = Array(_
