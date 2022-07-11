@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none" type="three_button">
+	<label>Replace Notepad</label>
+	<tip>Replace Notepad the Easy Way</tip>
+	<icon1>#edit</icon1>
+	<button backcol="none" display="both" label_pos="right" textcol="none">
+		<label>install</label>
+		<icon1>#newcommand</icon1>
+		<function type="normal">
+			<instruction>// install</instruction>
+			<instruction />
+			<instruction>@admin</instruction>
+			<instruction>@runmode:hide</instruction>
+			<instruction>@Set Notepad {dlgopen|Select the text editor you would like to use instead of Notepad.|*.exe}</instruction>
+			<instruction />
+			<instruction>reg add &quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot; /v Debugger /d &quot;{$Notepad}&quot; /f</instruction>
+		</function>
+	</button>
+	<button backcol="none" display="both" label_pos="right" textcol="none">
+		<label>Uninstall</label>
+		<icon1>#newcommand</icon1>
+		<function type="normal">
+			<instruction>@admin</instruction>
+			<instruction>@runmode hide</instruction>
+			<instruction>// uninstall</instruction>
+			<instruction>reg delete &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot; /f</instruction>
+		</function>
+	</button>
+</button>
