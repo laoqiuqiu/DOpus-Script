@@ -1,29 +1,21 @@
 <?xml version="1.0"?>
-<button backcol="none" display="both" label_pos="right" textcol="none" type="three_button">
+<button backcol="none" display="both" label_pos="right" textcol="none">
 	<label>Replace Notepad</label>
 	<tip>Replace Notepad the Easy Way</tip>
 	<icon1>#edit</icon1>
-	<button backcol="none" display="both" label_pos="right" textcol="none">
-		<label>install</label>
-		<icon1>#newcommand</icon1>
-		<function type="normal">
-			<instruction>// install</instruction>
-			<instruction />
-			<instruction>@admin</instruction>
-			<instruction>@runmode:hide</instruction>
-			<instruction>@Set Notepad {dlgopen|Select the text editor you would like to use instead of Notepad.|*.exe}</instruction>
-			<instruction />
-			<instruction>reg add &quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot; /v Debugger /d &quot;{$Notepad}&quot; /f</instruction>
-		</function>
-	</button>
-	<button backcol="none" display="both" label_pos="right" textcol="none">
-		<label>Uninstall</label>
-		<icon1>#newcommand</icon1>
-		<function type="normal">
-			<instruction>@admin</instruction>
-			<instruction>@runmode hide</instruction>
-			<instruction>// uninstall</instruction>
-			<instruction>reg delete &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot; /f</instruction>
-		</function>
-	</button>
+	<function type="normal">
+		<instruction>// Replace Notepad with notepad3</instruction>
+		<instruction>@admin</instruction>
+		<instruction>@runmode:hide</instruction>
+		<instruction>@Set RegPath = &quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot;</instruction>
+		<instruction />
+		<instruction>@keydown:none</instruction>
+		<instruction>//install</instruction>
+		<instruction>@Set Notepad = {dlgopen|Select the text editor you would like to use.|*.exe}</instruction>
+		<instruction>@Set Param = /z</instruction>
+		<instruction>reg add {$RegPath} /v Debugger /d &quot;&quot;&quot;&quot;{$Notepad}&quot;&quot;&quot; {$Param}&quot; /f</instruction>
+		<instruction>@keydown:shift</instruction>
+		<instruction>// uninstall</instruction>
+		<instruction>reg delete {$RegPath} /f</instruction>
+	</function>
 </button>
