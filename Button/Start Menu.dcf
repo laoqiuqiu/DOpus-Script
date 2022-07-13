@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<button backcol="none" display="icon" icon_size="large" textcol="none" type="menu">
+	<label>Start Menu</label>
+	<icon1>#gostartmenu</icon1>
+	<button backcol="none" display="both" label_pos="right" textcol="none">
+		<label>Start Menu</label>
+		<icon1>#newmenu</icon1>
+		<function type="normal">
+			<instruction>Go PATH /commonstartmenu/Programs|/start/Programs FOLDERCONTENT=nomenusel,useshell</instruction>
+		</function>
+	</button>
+</button>
