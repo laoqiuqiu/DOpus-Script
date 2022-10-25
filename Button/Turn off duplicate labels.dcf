@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>关闭重复标签</label>
+	<hotkeys>
+		<chord>
+			<key>tab</key>
+			<key>space</key>
+		</chord>
+	</hotkeys>
+	<icon1>#closetab</icon1>
+	<function type="script">
+		<instruction>@script JScript</instruction>
+		<instruction>/// author: 白天</instruction>
+		<instruction>/// QQ: 244749006</instruction>
+		<instruction>function OnClick(clickData)</instruction>
+		<instruction>{</instruction>
+		<instruction>	var cmd = clickData.func.command;</instruction>
+		<instruction>	cmd.deselect = false;</instruction>
+		<instruction>	</instruction>
+		<instruction>	var lister = DOpus.listers.lastactive;</instruction>
+		<instruction>	var tabs_left = lister.tabsleft;</instruction>
+		<instruction>	var tabs_right = lister.tabsright;</instruction>
+		<instruction>	closeduptabs(tabs_left,&quot;left&quot;);</instruction>
+		<instruction>	closeduptabs(tabs_right,&quot;right&quot;);</instruction>
+		<instruction />
+		<instruction>	function closeduptabs(tabs,l_r)</instruction>
+		<instruction>	{</instruction>
+		<instruction>		cmd.Clear;</instruction>
+		<instruction>		var tabpos = 0;</instruction>
+		<instruction>		var tabsnotclose = new Array;</instruction>
+		<instruction>		</instruction>
+		<instruction>		for(var t=0;t&lt;tabs.count;t++)</instruction>
+		<instruction>		{</instruction>
+		<instruction>			var tpath = tabs(t).path;</instruction>
+		<instruction>			DOpus.Output(&quot;tab=&quot;+t+&quot; 路径：&quot;+tpath);</instruction>
+		<instruction>			if(tabs(t).lock != &quot;off&quot;)</instruction>
+		<instruction>			{</instruction>
+		<instruction>				tabsnotclose.push(t);</instruction>
+		<instruction>				DOpus.Output(&quot;  --锁定:不关闭 加入数组\n&quot;);</instruction>
+		<instruction>			}</instruction>
+		<instruction>			else</instruction>
+		<instruction>			{</instruction>
+		<instruction>				var notclosed = 1;</instruction>
+		<instruction>				var ccmd = &quot;Go TABCLOSE=&quot;+l_r+&quot; TABPOS=&quot;+tabpos;</instruction>
+		<instruction>				if(tabsnotclose.length &gt; 0)</instruction>
+		<instruction>				{</instruction>
+		<instruction>					DOpus.Output(&quot;  --未锁定:进入向前比较&quot;);</instruction>
+		<instruction>					for (var nc in tabsnotclose)</instruction>
+		<instruction>					{</instruction>
+		<instruction>						var ncpath = tabs(tabsnotclose[nc]).path;</instruction>
+		<instruction>						if(tpath+&quot;&quot; == ncpath+&quot;&quot;)</instruction>
+		<instruction>						{</instruction>
+		<instruction>							cmd.AddLine(ccmd);</instruction>
+		<instruction>							tabpos--;</instruction>
+		<instruction>							notclosed = 0;</instruction>
+		<instruction>							DOpus.Output(&quot;向前与锁定数组比较有重复，关闭\n&quot;);</instruction>
+		<instruction>							break;</instruction>
+		<instruction>						}</instruction>
+		<instruction>					}</instruction>
+		<instruction>				}</instruction>
+		<instruction>				</instruction>
+		<instruction>				if(notclosed &amp;&amp; t&lt;tabs.count-1)</instruction>
+		<instruction>				{</instruction>
+		<instruction>					DOpus.Output(&quot;  向前比较无重复，不关闭\n进入向后比较&quot;);</instruction>
+		<instruction>					for(var n=t+1;n&lt;tabs.count;n++)</instruction>
+		<instruction>					{</instruction>
+		<instruction>						var npath = tabs(n).path;</instruction>
+		<instruction>						if(tpath+&quot;&quot; == npath+&quot;&quot;)</instruction>
+		<instruction>						{</instruction>
+		<instruction>							//DOpus.Output(ccmd);</instruction>
+		<instruction>							cmd.AddLine(ccmd);</instruction>
+		<instruction>							notclosed=0;</instruction>
+		<instruction>							tabpos--;</instruction>
+		<instruction>							DOpus.Output(&quot;向后比较,关闭了\n&quot;);</instruction>
+		<instruction>							break;</instruction>
+		<instruction>						}</instruction>
+		<instruction>					}</instruction>
+		<instruction>				}</instruction>
+		<instruction>				if(notclosed)</instruction>
+		<instruction>					DOpus.Output(&quot;  向后比较无重复，不关闭\n&quot;);</instruction>
+		<instruction>			}</instruction>
+		<instruction>			tabpos++;</instruction>
+		<instruction>		}</instruction>
+		<instruction>		DOpus.Output(&quot;\n命令行数：&quot;+cmd.linecount+&quot;\n&quot;);</instruction>
+		<instruction>		if(cmd.linecount)</instruction>
+		<instruction>		cmd.run;</instruction>
+		<instruction>	}</instruction>
+		<instruction>}</instruction>
+	</function>
+</button>
