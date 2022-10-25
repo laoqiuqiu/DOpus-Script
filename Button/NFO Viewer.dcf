@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<button backcol="none" display="both" label_pos="right" textcol="none">
+	<label>NFO Viewer</label>
+	<icon1>#newcommand</icon1>
+	<function type="script">
+		<instruction>@script VBScript</instruction>
+		<instruction>Option Explicit</instruction>
+		<instruction>Function OnClick(ByRef clickData)</instruction>
+		<instruction>    Dim dlg, msg : Set dlg = DOpus.Dlg</instruction>
+		<instruction>    dlg.window = clickData.func.sourcetab</instruction>
+		<instruction>	dlg.position = &quot;center&quot;</instruction>
+		<instruction>    dlg.template = &quot;NFOViewer&quot;</instruction>
+		<instruction>    dlg.detach = true</instruction>
+		<instruction>	dlg.cx = 500</instruction>
+		<instruction>	dlg.cy = 700</instruction>
+		<instruction>    dlg.Show</instruction>
+		<instruction>	dlg.Control(&quot;nfotext&quot;).value = nfo2txt(clickData.func.Command.files(0))</instruction>
+		<instruction>    Do</instruction>
+		<instruction>       Set msg = dlg.GetMsg()</instruction>
+		<instruction />
+		<instruction>    Loop While msg    </instruction>
+		<instruction>	</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction>&apos;&apos;&apos; Code page 437 is the IBM PC code page. http://en.wikipedia.org/wiki/Code_page_437</instruction>
+		<instruction>Dim conv_table : conv_table = array( _</instruction>
+		<instruction>   &amp;H0000&amp;, &amp;H263A&amp;, &amp;H263B&amp;, &amp;H2665&amp;, &amp;H2666&amp;, &amp;H2663&amp;, &amp;H2660&amp;, &amp;H2022&amp;, &amp;H25D8&amp;, &amp;H0009&amp;, &amp;H000A&amp;, &amp;H2642&amp;, &amp;H2640&amp;, &amp;H000D&amp;, &amp;H266B&amp;, &amp;H263C&amp;,  _</instruction>
+		<instruction>   &amp;H25BA&amp;, &amp;H25C4&amp;, &amp;H2195&amp;, &amp;H203C&amp;, &amp;H00B6&amp;, &amp;H00A7&amp;, &amp;H25AC&amp;, &amp;H21A8&amp;, &amp;H2191&amp;, &amp;H2193&amp;, &amp;H2192&amp;, &amp;H2190&amp;, &amp;H221F&amp;, &amp;H2194&amp;, &amp;H25B2&amp;, &amp;H25BC&amp;,  _</instruction>
+		<instruction>   &amp;H0020&amp;, &amp;H0021&amp;, &amp;H0022&amp;, &amp;H0023&amp;, &amp;H0024&amp;, &amp;H0025&amp;, &amp;H0026&amp;, &amp;H0027&amp;, &amp;H0028&amp;, &amp;H0029&amp;, &amp;H002A&amp;, &amp;H002B&amp;, &amp;H002C&amp;, &amp;H002D&amp;, &amp;H002E&amp;, &amp;H002F&amp;,  _</instruction>
+		<instruction>   &amp;H0030&amp;, &amp;H0031&amp;, &amp;H0032&amp;, &amp;H0033&amp;, &amp;H0034&amp;, &amp;H0035&amp;, &amp;H0036&amp;, &amp;H0037&amp;, &amp;H0038&amp;, &amp;H0039&amp;, &amp;H003A&amp;, &amp;H003B&amp;, &amp;H003C&amp;, &amp;H003D&amp;, &amp;H003E&amp;, &amp;H003F&amp;,  _</instruction>
+		<instruction>   &amp;H0040&amp;, &amp;H0041&amp;, &amp;H0042&amp;, &amp;H0043&amp;, &amp;H0044&amp;, &amp;H0045&amp;, &amp;H0046&amp;, &amp;H0047&amp;, &amp;H0048&amp;, &amp;H0049&amp;, &amp;H004A&amp;, &amp;H004B&amp;, &amp;H004C&amp;, &amp;H004D&amp;, &amp;H004E&amp;, &amp;H004F&amp;,  _</instruction>
+		<instruction>   &amp;H0050&amp;, &amp;H0051&amp;, &amp;H0052&amp;, &amp;H0053&amp;, &amp;H0054&amp;, &amp;H0055&amp;, &amp;H0056&amp;, &amp;H0057&amp;, &amp;H0058&amp;, &amp;H0059&amp;, &amp;H005A&amp;, &amp;H005B&amp;, &amp;H005C&amp;, &amp;H005D&amp;, &amp;H005E&amp;, &amp;H005F&amp;,  _</instruction>
+		<instruction>   &amp;H0060&amp;, &amp;H0061&amp;, &amp;H0062&amp;, &amp;H0063&amp;, &amp;H0064&amp;, &amp;H0065&amp;, &amp;H0066&amp;, &amp;H0067&amp;, &amp;H0068&amp;, &amp;H0069&amp;, &amp;H006A&amp;, &amp;H006B&amp;, &amp;H006C&amp;, &amp;H006D&amp;, &amp;H006E&amp;, &amp;H006F&amp;,  _</instruction>
+		<instruction>   &amp;H0070&amp;, &amp;H0071&amp;, &amp;H0072&amp;, &amp;H0073&amp;, &amp;H0074&amp;, &amp;H0075&amp;, &amp;H0076&amp;, &amp;H0077&amp;, &amp;H0078&amp;, &amp;H0079&amp;, &amp;H007A&amp;, &amp;H007B&amp;, &amp;H007C&amp;, &amp;H007D&amp;, &amp;H007E&amp;, &amp;H2302&amp;,  _</instruction>
+		<instruction>   &amp;H00C7&amp;, &amp;H00FC&amp;, &amp;H00E9&amp;, &amp;H00E2&amp;, &amp;H00E4&amp;, &amp;H00E0&amp;, &amp;H00E5&amp;, &amp;H00E7&amp;, &amp;H00EA&amp;, &amp;H00EB&amp;, &amp;H00E8&amp;, &amp;H00EF&amp;, &amp;H00EE&amp;, &amp;H00EC&amp;, &amp;H00C4&amp;, &amp;H00C5&amp;,  _</instruction>
+		<instruction>   &amp;H00C9&amp;, &amp;H00E6&amp;, &amp;H00C6&amp;, &amp;H00F4&amp;, &amp;H00F6&amp;, &amp;H00F2&amp;, &amp;H00FB&amp;, &amp;H00F9&amp;, &amp;H00FF&amp;, &amp;H00D6&amp;, &amp;H00DC&amp;, &amp;H00A2&amp;, &amp;H00A3&amp;, &amp;H00A5&amp;, &amp;H20A7&amp;, &amp;H0192&amp;,  _</instruction>
+		<instruction>   &amp;H00E1&amp;, &amp;H00ED&amp;, &amp;H00F3&amp;, &amp;H00FA&amp;, &amp;H00F1&amp;, &amp;H00D1&amp;, &amp;H00AA&amp;, &amp;H00BA&amp;, &amp;H00BF&amp;, &amp;H2310&amp;, &amp;H00AC&amp;, &amp;H00BD&amp;, &amp;H00BC&amp;, &amp;H00A1&amp;, &amp;H00AB&amp;, &amp;H00BB&amp;,  _</instruction>
+		<instruction>   &amp;H2591&amp;, &amp;H2592&amp;, &amp;H2593&amp;, &amp;H2502&amp;, &amp;H2524&amp;, &amp;H2561&amp;, &amp;H2562&amp;, &amp;H2556&amp;, &amp;H2555&amp;, &amp;H2563&amp;, &amp;H2551&amp;, &amp;H2557&amp;, &amp;H255D&amp;, &amp;H255C&amp;, &amp;H255B&amp;, &amp;H2510&amp;,  _</instruction>
+		<instruction>   &amp;H2514&amp;, &amp;H2534&amp;, &amp;H252C&amp;, &amp;H251C&amp;, &amp;H2500&amp;, &amp;H253C&amp;, &amp;H255E&amp;, &amp;H255F&amp;, &amp;H255A&amp;, &amp;H2554&amp;, &amp;H2569&amp;, &amp;H2566&amp;, &amp;H2560&amp;, &amp;H2550&amp;, &amp;H256C&amp;, &amp;H2567&amp;,  _</instruction>
+		<instruction>   &amp;H2568&amp;, &amp;H2564&amp;, &amp;H2565&amp;, &amp;H2559&amp;, &amp;H2558&amp;, &amp;H2552&amp;, &amp;H2553&amp;, &amp;H256B&amp;, &amp;H256A&amp;, &amp;H2518&amp;, &amp;H250C&amp;, &amp;H2588&amp;, &amp;H2584&amp;, &amp;H258C&amp;, &amp;H2590&amp;, &amp;H2580&amp;,  _</instruction>
+		<instruction>   &amp;H03B1&amp;, &amp;H03B2&amp;, &amp;H0393&amp;, &amp;H03C0&amp;, &amp;H03A3&amp;, &amp;H03C3&amp;, &amp;H03BC&amp;, &amp;H03C4&amp;, &amp;H03A6&amp;, &amp;H03B8&amp;, &amp;H2126&amp;, &amp;H03B4&amp;, &amp;H221E&amp;, &amp;H00F8&amp;, &amp;H03B5&amp;, &amp;H2229&amp;,  _</instruction>
+		<instruction>   &amp;H2261&amp;, &amp;H00B1&amp;, &amp;H2265&amp;, &amp;H2264&amp;, &amp;H2320&amp;, &amp;H2321&amp;, &amp;H00F7&amp;, &amp;H2248&amp;, &amp;H00B0&amp;, &amp;H00B7&amp;, &amp;H02D9&amp;, &amp;H221A&amp;, &amp;H207F&amp;, &amp;H00B2&amp;, &amp;H25A0&amp;, &amp;H00A0&amp;   _</instruction>
+		<instruction>   )</instruction>
+		<instruction>   </instruction>
+		<instruction>Function nfo2txt(ByVal FileName)</instruction>
+		<instruction>	Dim Blob, i, Result</instruction>
+		<instruction>	Set Blob = DOpus.FSUtil.OpenFile(FileName, &quot;e&quot;).Read</instruction>
+		<instruction>	For i = 0 To Blob.Size - 1</instruction>
+		<instruction>		If Blob(i) &lt;&gt; 0 Then Result = Result + ChrW(conv_table(Blob(i)))</instruction>
+		<instruction>	Next</instruction>
+		<instruction>	nfo2txt = Result</instruction>
+		<instruction>End Function</instruction>
+		<instruction />
+		<instruction />
+		<instruction>==SCRIPT RESOURCES</instruction>
+		<instruction>&lt;resources&gt;</instruction>
+		<instruction>	&lt;resource name=&quot;NFOViewer&quot; type=&quot;dialog&quot;&gt;</instruction>
+		<instruction>		&lt;dialog fontface=&quot;Lucida Console&quot; fontsize=&quot;12&quot; height=&quot;580&quot; lang=&quot;english&quot; resize=&quot;yes&quot; width=&quot;340&quot;&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;580&quot; multiline=&quot;yes&quot; name=&quot;nfotext&quot; readonly=&quot;yes&quot; resize=&quot;wh&quot; type=&quot;edit&quot; width=&quot;340&quot; x=&quot;0&quot; y=&quot;0&quot; /&gt;</instruction>
+		<instruction>		&lt;/dialog&gt;</instruction>
+		<instruction>	&lt;/resource&gt;</instruction>
+		<instruction>&lt;/resources&gt;</instruction>
+	</function>
+</button>
