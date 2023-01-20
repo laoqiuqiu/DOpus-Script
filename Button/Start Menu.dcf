@@ -6,7 +6,7 @@
 		<label>Start Menu</label>
 		<icon1>#newmenu</icon1>
 		<function type="normal">
-			<instruction>Go PATH /commonstartmenu/Programs|/start/Programs FOLDERCONTENT=nomenusel,useshell</instruction>
+			<instruction>Go PATH /commonprograms|/Programs FOLDERCONTENT=nomenusel,useshell</instruction>
 		</function>
 	</button>
 </button>
