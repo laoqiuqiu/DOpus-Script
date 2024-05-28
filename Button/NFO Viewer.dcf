@@ -3,18 +3,23 @@
 	<label>NFO Viewer</label>
 	<icon1>#newcommand</icon1>
 	<function type="script">
+		<instruction>@disablenosel</instruction>
+		<instruction>@filesonly</instruction>
+		<instruction>@nodeselect </instruction>
 		<instruction>@script VBScript</instruction>
 		<instruction>Option Explicit</instruction>
 		<instruction>Function OnClick(ByRef clickData)</instruction>
 		<instruction>    Dim dlg, msg : Set dlg = DOpus.Dlg</instruction>
+		<instruction>	Dim NFOFile : Set NFOFile = clickData.func.Command.files(0)</instruction>
 		<instruction>    dlg.window = clickData.func.sourcetab</instruction>
 		<instruction>	dlg.position = &quot;center&quot;</instruction>
 		<instruction>    dlg.template = &quot;NFOViewer&quot;</instruction>
 		<instruction>    dlg.detach = true</instruction>
 		<instruction>	dlg.cx = 500</instruction>
 		<instruction>	dlg.cy = 700</instruction>
+		<instruction>	dlg.title = &quot;NFO View - &quot; &amp; NFOFile.name</instruction>
 		<instruction>    dlg.Show</instruction>
-		<instruction>	dlg.Control(&quot;nfotext&quot;).value = nfo2txt(clickData.func.Command.files(0))</instruction>
+		<instruction>	dlg.Control(&quot;nfotext&quot;).value = nfo2txt(NFOFile)</instruction>
 		<instruction>    Do</instruction>
 		<instruction>       Set msg = dlg.GetMsg()</instruction>
 		<instruction />
@@ -55,8 +60,8 @@
 		<instruction>==SCRIPT RESOURCES</instruction>
 		<instruction>&lt;resources&gt;</instruction>
 		<instruction>	&lt;resource name=&quot;NFOViewer&quot; type=&quot;dialog&quot;&gt;</instruction>
-		<instruction>		&lt;dialog fontface=&quot;Lucida Console&quot; fontsize=&quot;12&quot; height=&quot;580&quot; lang=&quot;english&quot; resize=&quot;yes&quot; width=&quot;340&quot;&gt;</instruction>
-		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;580&quot; multiline=&quot;yes&quot; name=&quot;nfotext&quot; readonly=&quot;yes&quot; resize=&quot;wh&quot; type=&quot;edit&quot; width=&quot;340&quot; x=&quot;0&quot; y=&quot;0&quot; /&gt;</instruction>
+		<instruction>		&lt;dialog fontface=&quot;Lucida Console&quot; fontsize=&quot;13&quot; height=&quot;480&quot; lang=&quot;english&quot; resize=&quot;yes&quot; width=&quot;340&quot;&gt;</instruction>
+		<instruction>			&lt;control halign=&quot;left&quot; height=&quot;472&quot; multiline=&quot;yes&quot; name=&quot;nfotext&quot; readonly=&quot;yes&quot; resize=&quot;wh&quot; type=&quot;edit&quot; width=&quot;332&quot; x=&quot;4&quot; y=&quot;4&quot; /&gt;</instruction>
 		<instruction>		&lt;/dialog&gt;</instruction>
 		<instruction>	&lt;/resource&gt;</instruction>
 		<instruction>&lt;/resources&gt;</instruction>
