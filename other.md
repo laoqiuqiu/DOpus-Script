@@ -17,6 +17,7 @@ SetAttr META gpsaltitude gpslatitude gpslongitude
 ### DOpus 13 程序分组提示信息
 ```
 <b><#32CD32>{name}</#></b>{thumbnail}
+ 
 <b>　　公司：</b>\	{companyname}
 <b>产品版本：</b>\	{prodversion}
 <b>　　版权：</b>\	{copyright}
@@ -25,8 +26,8 @@ SetAttr META gpsaltitude gpslatitude gpslongitude
 <b>创建时间：</b>\	{created}
 <b>修改时间：</b>\	{modified}
 <b>文件大小：</b>\	{sizeauto}
-<b>　　平台：</b>\	{=return(RegEx(desc, "(^\w+\d*)(.*)", "\1"));=}{!=RegEx(desc, "(\w\d*?\W\s)(\.NET)(\W\s)", "") == ""=} (.NET){!}
-<b>数字签名：</b>\	{=return(RegEx(desc, "\.NET\W\s(\w+)", "\1", "(^\w+\d*)\W\s(\w+)(\W\s)*", "\2"));=}
+<b>　　平台：</b>\	{=return(RegEx(desc, "(^.*?)( - )(.*)", "\3", "(.*?)(\.NET), (.*)", "\1\3", "(\w+)(.*?)(\w+)", "\1"));=}{!=RegEx(desc, "(\.NET)(.*)", "\1") == ".NET"=} (.NET){!}
+<b>数字签名：</b>\	{=return(RegEx(desc, "(^.*?)( - )(.*)", "\3", "(.*?)(\.NET), (.*)", "\1\3", "(\w+)(.*?)(\w+)", "\3"));=}
 ```
 
 ### DOpus 13 求值器列
