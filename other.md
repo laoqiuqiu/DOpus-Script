@@ -18,16 +18,17 @@ SetAttr META gpsaltitude gpslatitude gpslongitude
 ```
 <b><#32CD32>{name}</#></b>{thumbnail}
  
-<b>　　公司：</b>\	{companyname}
+<b>文件大小：</b>\	{sizeauto}({size} Bytes)
+<b>出品公司：</b>\	{companyname}
 <b>产品版本：</b>\	{prodversion}
-<b>　　版权：</b>\	{copyright}
+<b>版权信息：</b>\	{copyright}
 <b>文件描述：</b>\	{moddesc}
 <b>文件版本：</b>\	{modversion}
 <b>创建时间：</b>\	{created}
 <b>修改时间：</b>\	{modified}
-<b>文件大小：</b>\	{sizeauto}
-<b>　　平台：</b>\	{=return(RegEx(desc, "(^.*?)( - )(.*)", "\3", "(.*?)(\.NET), (.*)", "\1\3", "(\w+)(.*?)(\w+)", "\1"));=}{!=RegEx(desc, "(\.NET)(.*)", "\1") == ".NET"=} (.NET){!}
-<b>数字签名：</b>\	{=return(RegEx(desc, "(^.*?)( - )(.*)", "\3", "(.*?)(\.NET), (.*)", "\1\3", "(\w+)(.*?)(\w+)", "\3"));=}
+\	
+<b>程序架构：</b>\	{=Return(RegEx(Mid(desc, (Len(userdesc) != 0 ? Len(userdesc) + 3: 0)), "(^\w*), (.*)", "\1"));=}{!=return(Match(desc, "(\.net)", "rp"))=} (.NET){!}
+<b>数字签名：</b>\	{=return(RegEx(desc, "(" + LanguageStr(5650) + "|" + LanguageStr(5651) + ")(.*)", "\1"));=}
 ```
 
 ### DOpus 13 求值器列
